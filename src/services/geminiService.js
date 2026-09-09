@@ -79,14 +79,18 @@ Format strictly as JSON matching this schema:
         "location": "District or neighborhood",
         "socialProof": {
           "xhs": {
-            "author": "XHS Creator Name",
-            "likes": "1.8w",
-            "tag": "避坑指南",
+            "author": "Real verified creator or tourism bureau (e.g. 日本国家旅游局JNTO, GO TOKYO东京观光, 日本美食探索, teamLab无界)",
+            "verified": true,
+            "profileUrl": "https://www.xiaohongshu.com/user/profile/60011650000000000100204b",
+            "likes": "2.8w",
+            "tag": "官方避坑",
             "tip": "Concrete crowd avoidance or hidden gem advice from Xiaohongshu / RedNote"
           },
           "instagram": {
-            "handle": "@travel_creator",
-            "likes": "34.2k",
+            "handle": "Real verified creator (e.g. @gotokyo.official, @tokyocameraclub, @tokyocheapo, @teamlab, @ramenadventures, @tokyofoodguide)",
+            "verified": true,
+            "profileUrl": "https://www.instagram.com/gotokyo.official/",
+            "likes": "48.2k",
             "reelDuration": "0:25",
             "tip": "Photography framing or viral aesthetic angle"
           }

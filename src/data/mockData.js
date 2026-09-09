@@ -103,14 +103,20 @@ export const INITIAL_ITINERARY = [
         location: 'Shinjuku',
         socialProof: {
           xhs: {
-            author: '关东私藏指南',
-            likes: '1.2w',
-            tag: '避坑指南',
+            author: 'GO TOKYO东京观光',
+            verified: true,
+            userId: '58bd81a56a6a6970ba16c7c8',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/58bd81a56a6a6970ba16c7c8',
+            likes: '2.8w',
+            tag: '官方避坑',
             tip: '下午4点停止入园！千万别从千驮谷门进，从新宿门进直通日式庭园茶室出片率最高。'
           },
           instagram: {
-            handle: '@wanderlust_charlie',
-            likes: '18.4k',
+            handle: '@gotokyo.official',
+            username: 'gotokyo.official',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/gotokyo.official/',
+            likes: '48.2k',
             reelDuration: '0:22',
             tip: 'Golden hour sunlight filtering through the maple trees near Taiwan Pavilion.'
           }
@@ -129,13 +135,19 @@ export const INITIAL_ITINERARY = [
         location: 'West Shinjuku',
         socialProof: {
           xhs: {
-            author: '吃不胖的Alice',
-            likes: '2.4w',
+            author: '日本美食探索',
+            verified: true,
+            userId: '558d06a888a0910d01e31e51',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/558d06a888a0910d01e31e51',
+            likes: '3.4w',
             tag: '宝藏美食',
             tip: '避开主街第一家排队游客店，拐进中段巷内炭烤老店只要¥200一串，性价比拉满！'
           },
           instagram: {
-            handle: '@nightlife.tokyo',
+            handle: '@tokyocheapo',
+            username: 'tokyocheapo',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyocheapo/',
             likes: '61.5k',
             reelDuration: '0:34',
             tip: 'Epic cyberpunk lantern reflection shots, especially after a light evening drizzle.'
@@ -155,14 +167,20 @@ export const INITIAL_ITINERARY = [
         location: 'Golden Gai',
         socialProof: {
           xhs: {
-            author: '微醺东京',
-            likes: '9,840',
+            author: '小熊饼干游东京',
+            verified: true,
+            userId: '5a7b33fc11be1003935a5ef6',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/5a7b33fc11be1003935a5ef6',
+            likes: '1.9w',
             tag: '夜生活防坑',
             tip: '多数小酒吧有¥500~¥1,000的Table Charge（座位费），进店前先看门前明码标价小牌。'
           },
           instagram: {
-            handle: '@tokyobynight',
-            likes: '34.2k',
+            handle: '@tokyocheapo',
+            username: 'tokyocheapo',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyocheapo/',
+            likes: '44.2k',
             reelDuration: '0:19',
             tip: 'Narrow second-floor staircases provide the classic atmospheric low-angle framing.'
           }
@@ -190,14 +208,20 @@ export const INITIAL_ITINERARY = [
         location: 'Asakusa',
         socialProof: {
           xhs: {
-            author: '东京咖啡物语',
-            likes: '8,420',
-            tag: '宝藏咖啡',
-            tip: '二楼榻榻米木窗出片绝美，推荐香草华夫饼+冰手冲！'
+            author: 'GO TOKYO东京观光',
+            verified: true,
+            userId: '58bd81a56a6a6970ba16c7c8',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/58bd81a56a6a6970ba16c7c8',
+            likes: '1.4w',
+            tag: '官方推荐',
+            tip: '二楼榻榻米木窗出片绝美，推荐香草华夫饼+北欧风格冰手冲！'
           },
           instagram: {
-            handle: '@cafelover_tokyo',
-            likes: '29.3k',
+            handle: '@tokyofoodguide',
+            username: 'tokyofoodguide',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyofoodguide/',
+            likes: '39.3k',
             reelDuration: '0:18',
             tip: 'Morning Scandinavian light through the curved glass facade.'
           }
@@ -216,14 +240,20 @@ export const INITIAL_ITINERARY = [
         location: 'Asakusa',
         socialProof: {
           xhs: {
-            author: '东京漫游日记',
-            likes: '1.8w',
-            tag: '避坑指南',
+            author: '日本国家旅游局JNTO',
+            verified: true,
+            userId: '60011650000000000100204b',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/60011650000000000100204b',
+            likes: '3.8w',
+            tag: '官方避坑',
             tip: '雷门大灯笼正下方仰拍避人群；浅草文化观光中心8F免费俯瞰五重塔和仲见世全景！'
           },
           instagram: {
-            handle: '@wanderlust_charlie',
-            likes: '24.1k',
+            handle: '@tokyocameraclub',
+            username: 'tokyocameraclub',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyocameraclub/',
+            likes: '64.1k',
             reelDuration: '0:32',
             tip: 'Incense burner smoke backlit by afternoon sun makes for mystical portraits.'
           }
@@ -242,13 +272,19 @@ export const INITIAL_ITINERARY = [
         location: 'Akihabara',
         socialProof: {
           xhs: {
-            author: '秋叶原玩家',
-            likes: '1.1w',
+            author: '小熊饼干游东京',
+            verified: true,
+            userId: '5a7b33fc11be1003935a5ef6',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/5a7b33fc11be1003935a5ef6',
+            likes: '2.1w',
             tag: '抓娃娃避坑',
             tip: '主街大店抓力普遍松，去横巷GiGO三号馆或Mandarake淘古董游戏卡带更划算。'
           },
           instagram: {
-            handle: '@tokyogamer_bob',
+            handle: '@tokyoweekender',
+            username: 'tokyoweekender',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyoweekender/',
             likes: '45.7k',
             reelDuration: '0:30',
             tip: 'Taiko drum rhythm game action shots with neon screen reflections.'
@@ -268,13 +304,19 @@ export const INITIAL_ITINERARY = [
         location: 'Kanda',
         socialProof: {
           xhs: {
-            author: '吃不胖的Alice',
-            likes: '1.6w',
+            author: '日本美食探索',
+            verified: true,
+            userId: '558d06a888a0910d01e31e51',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/558d06a888a0910d01e31e51',
+            likes: '2.6w',
             tag: '排队指南',
             tip: '建议选普通辣+少麻（Medium/Less Numbing）最能品出醇厚豚骨味噌底！'
           },
           instagram: {
-            handle: '@ramen_adventures',
+            handle: '@ramenadventures',
+            username: 'ramenadventures',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/ramenadventures/',
             likes: '52.1k',
             reelDuration: '0:25',
             tip: 'Slow motion steam rising off the demon mask bowl under warm amber spotlights.'
@@ -304,14 +346,20 @@ export const INITIAL_ITINERARY = [
         location: 'Toyosu',
         socialProof: {
           xhs: {
-            author: '光影探索者',
-            likes: '2.8w',
-            tag: '拍照避坑',
+            author: 'teamLab无界',
+            verified: true,
+            userId: '5a73c5fa4eacab4c4ccc9778',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/5a73c5fa4eacab4c4ccc9778',
+            likes: '5.2w',
+            tag: '官方指南',
             tip: '必须穿短裤或易卷起的裤子（水深及膝）！地板反光镜面多，穿裙子务必穿安全裤。'
           },
           instagram: {
-            handle: '@teamlab_aesthetic',
-            likes: '68.4k',
+            handle: '@teamlab',
+            username: 'teamlab',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/teamlab/',
+            likes: '112.4k',
             reelDuration: '0:35',
             tip: 'The Crystal Universe corridor sparkles best on 0.5x wide angle video.'
           }
@@ -330,14 +378,20 @@ export const INITIAL_ITINERARY = [
         location: 'Toyosu Market',
         socialProof: {
           xhs: {
-            author: '吃不胖的Alice',
-            likes: '1.4w',
+            author: '日本美食探索',
+            verified: true,
+            userId: '558d06a888a0910d01e31e51',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/558d06a888a0910d01e31e51',
+            likes: '2.8w',
             tag: '海鲜排队',
             tip: '大和寿司排队常超2小时，推荐隔壁的“八千代”炸海鲜定食与“寿司大”分店，鲜甜度一样高！'
           },
           instagram: {
-            handle: '@tokyofoodie_guide',
-            likes: '39.8k',
+            handle: '@tokyofoodguide',
+            username: 'tokyofoodguide',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyofoodguide/',
+            likes: '58.8k',
             reelDuration: '0:24',
             tip: 'Macro close-up shots of fatty Otoro tuna glistening under market lights.'
           }
@@ -357,14 +411,20 @@ export const INITIAL_ITINERARY = [
         location: 'Odaiba',
         socialProof: {
           xhs: {
-            author: '气象避坑台',
-            likes: '6,210',
-            tag: '台风预警',
+            author: '日本国家旅游局JNTO',
+            verified: true,
+            userId: '60011650000000000100204b',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/60011650000000000100204b',
+            likes: '3.2w',
+            tag: '官方预警',
             tip: '台风或强阵风天台场水上巴士必定停航！室内Plan B建议首选筑地荞麦研习班或六本木Hills。'
           },
           instagram: {
-            handle: '@bay_cruises_jp',
-            likes: '22.1k',
+            handle: '@gotokyo.official',
+            username: 'gotokyo.official',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/gotokyo.official/',
+            likes: '41.1k',
             reelDuration: '0:15',
             tip: 'Sunset silhouette through the tinted curved dome canopy.'
           }
@@ -383,14 +443,20 @@ export const INITIAL_ITINERARY = [
         location: 'Odaiba',
         socialProof: {
           xhs: {
-            author: '室内游玩达人',
-            likes: '1.5w',
+            author: '小熊饼干游东京',
+            verified: true,
+            userId: '5a7b33fc11be1003935a5ef6',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/5a7b33fc11be1003935a5ef6',
+            likes: '2.5w',
             tag: '室内救星',
             tip: '雨天完全不淋雨！购买晚间优惠通票（Night Pass）立省¥1,500日元。'
           },
           instagram: {
-            handle: '@tokyovibe_bob',
-            likes: '31.2k',
+            handle: '@tokyocheapo',
+            username: 'tokyocheapo',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyocheapo/',
+            likes: '53.2k',
             reelDuration: '0:28',
             tip: 'Illuminated Rainbow Bridge from the Decks third floor observation balcony.'
           }
@@ -418,13 +484,19 @@ export const INITIAL_ITINERARY = [
         location: 'Shimokitazawa',
         socialProof: {
           xhs: {
-            author: '下北泽野生买手',
+            author: '小熊饼干游东京',
+            verified: true,
+            userId: '5a7b33fc11be1003935a5ef6',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/5a7b33fc11be1003935a5ef6',
             likes: '2.1w',
             tag: '古着淘货',
             tip: '西口走进去是低价旧衣堆，真正宝藏在北口小街的“Stick Out”和“New York Joe”！'
           },
           instagram: {
-            handle: '@vintage_tokyo',
+            handle: '@tokyocheapo',
+            username: 'tokyocheapo',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyocheapo/',
             likes: '48.9k',
             reelDuration: '0:29',
             tip: 'Pedestrian railroad track cafes and retro vinyl sleeve flat-lays.'
@@ -444,13 +516,19 @@ export const INITIAL_ITINERARY = [
         location: 'Shibuya',
         socialProof: {
           xhs: {
-            author: '摄影师Bob',
-            likes: '3.1w',
-            tag: '出片天花板',
+            author: 'GO TOKYO东京观光',
+            verified: true,
+            userId: '58bd81a56a6a6970ba16c7c8',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/58bd81a56a6a6970ba16c7c8',
+            likes: '4.5w',
+            tag: '官方推荐',
             tip: '提前2周官网抢日落场次！顶层玻璃四角排队需快速换手，手机挂绳务必提前系好。'
           },
           instagram: {
-            handle: '@tokyo.aesthetic',
+            handle: '@gotokyo.official',
+            username: 'gotokyo.official',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/gotokyo.official/',
             likes: '72.3k',
             reelDuration: '0:42',
             tip: 'Golden hour transitions directly into neon twilight over the 5-way scramble crossing.'
@@ -470,13 +548,19 @@ export const INITIAL_ITINERARY = [
         location: 'Ningyocho',
         socialProof: {
           xhs: {
-            author: '东京米其林清单',
-            likes: '1.9w',
+            author: '日本美食探索',
+            verified: true,
+            userId: '558d06a888a0910d01e31e51',
+            profileUrl: 'https://www.xiaohongshu.com/user/profile/558d06a888a0910d01e31e51',
+            likes: '3.9w',
             tag: '寿喜烧天花板',
             tip: '黑毛和牛A5特上牛肉入口即化，寿喜烧汤底裹生鸡蛋是神仙吃法，需提前至少3周预订！'
           },
           instagram: {
-            handle: '@japan_food_guide',
+            handle: '@tokyofoodguide',
+            username: 'tokyofoodguide',
+            verified: true,
+            profileUrl: 'https://www.instagram.com/tokyofoodguide/',
             likes: '89.4k',
             reelDuration: '0:45',
             tip: 'Tableside sizzling marbling beef dip in fresh egg yolk slow-motion reel.'

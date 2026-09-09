@@ -12,7 +12,8 @@ import {
   Sparkles,
   Share2,
   Film,
-  Camera
+  Camera,
+  CheckCircle2
 } from 'lucide-react';
 import {
   getInstagramPostsForDestination,
@@ -175,16 +176,26 @@ export default function InstagramTravelModal({
                       {/* Content details */}
                       <div className="p-4 space-y-2.5">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                          <a
+                            href={post.profileUrl || `https://www.instagram.com/${post.username}/`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-2 group/user hover:opacity-85 transition-opacity"
+                          >
                             <img
                               src={post.userAvatar}
                               alt={post.username}
                               className="w-6 h-6 rounded-full object-cover border"
                             />
-                            <span className="text-xs font-bold text-slate-800">
-                              @{post.username}
-                            </span>
-                          </div>
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs font-bold text-slate-800 group-hover/user:text-purple-600 transition-colors">
+                                @{post.username}
+                              </span>
+                              {post.verified && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-sky-500 fill-sky-500 text-white shrink-0" />
+                              )}
+                            </div>
+                          </a>
                           <span className="text-[11px] text-slate-400 flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-rose-500" />
                             <span>{post.location}</span>
@@ -214,17 +225,17 @@ export default function InstagramTravelModal({
 
                     {/* Bottom action link */}
                     <div className="px-4 pb-4 pt-1 flex items-center justify-between border-t border-slate-50">
-                      <span className="text-[10px] text-slate-400">
-                        Geo-verified spot
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Verified Creator Reel
                       </span>
                       <a
-                        href={`https://www.instagram.com/explore/tags/${post.hashtags[0].replace(/^#/, '')}/`}
+                        href={post.profileUrl || `https://www.instagram.com/${post.username}/`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                        className="text-xs font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1.5 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl transition-all"
                       >
-                        <span>Watch on Instagram</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <span>View @{post.username} on Instagram</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>

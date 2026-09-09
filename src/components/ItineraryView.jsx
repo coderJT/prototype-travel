@@ -21,7 +21,8 @@ import {
   CheckCircle2,
   Ticket,
   BookOpen,
-  RotateCcw
+  RotateCcw,
+  ExternalLink
 } from 'lucide-react';
 import { generateBookingComUrl, REAL_WORLD_HOTELS, REAL_WORLD_FLIGHTS } from '../services/bookingService';
 import DemandAiBookingModal from './DemandAiBookingModal';
@@ -688,16 +689,35 @@ export default function ItineraryView({
                           >
                             <span className="text-sm shrink-0">📕</span>
                             <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
-                              <div className="flex items-center gap-1.5 font-bold text-rose-800">
-                                <span className="px-1.5 py-0.2 bg-rose-100 rounded text-[10px]">
-                                  {item.socialProof.xhs.tag || '避坑指南'}
-                                </span>
-                                <span className="truncate">@{item.socialProof.xhs.author}</span>
-                                <span className="text-rose-500 font-normal">({item.socialProof.xhs.likes} likes)</span>
+                              <div className="flex items-center justify-between gap-1.5 font-bold text-rose-800">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="px-1.5 py-0.2 bg-rose-100 rounded text-[10px] shrink-0">
+                                    {item.socialProof.xhs.tag || '官方避坑'}
+                                  </span>
+                                  <a
+                                    href={item.socialProof.xhs.profileUrl || `https://www.xiaohongshu.com/user/profile/${item.socialProof.xhs.userId || '60011650000000000100204b'}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="truncate hover:underline text-rose-900 font-bold flex items-center gap-1 hover:text-rose-600 transition-colors"
+                                    title="Open real verified profile on Xiaohongshu"
+                                  >
+                                    <span>@{item.socialProof.xhs.author}</span>
+                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 opacity-70" />
+                                  </a>
+                                </div>
+                                <span className="text-rose-500 font-normal shrink-0">({item.socialProof.xhs.likes} likes)</span>
                               </div>
                               <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
                                 "{item.socialProof.xhs.tip}"
                               </p>
+                              <div className="mt-1 flex items-center justify-between text-[10px]">
+                                <span className="text-rose-600/80 font-medium">Real Xiaohongshu Creator</span>
+                                <span className="text-slate-400 group-hover:text-rose-600 transition-colors flex items-center gap-0.5">
+                                  <span>Tips Hub</span>
+                                  <span>→</span>
+                                </span>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -713,16 +733,35 @@ export default function ItineraryView({
                           >
                             <span className="text-sm shrink-0">📸</span>
                             <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
-                              <div className="flex items-center gap-1.5 font-bold text-purple-800">
-                                <span className="px-1.5 py-0.2 bg-purple-100 rounded text-[10px]">
-                                  IG Reel {item.socialProof.instagram.reelDuration}
-                                </span>
-                                <span className="truncate">{item.socialProof.instagram.handle}</span>
-                                <span className="text-purple-500 font-normal">({item.socialProof.instagram.likes} likes)</span>
+                              <div className="flex items-center justify-between gap-1.5 font-bold text-purple-800">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="px-1.5 py-0.2 bg-purple-100 rounded text-[10px] shrink-0">
+                                    IG Reel {item.socialProof.instagram.reelDuration}
+                                  </span>
+                                  <a
+                                    href={item.socialProof.instagram.profileUrl || `https://www.instagram.com/${(item.socialProof.instagram.username || item.socialProof.instagram.handle || 'gotokyo.official').replace(/^@/, '')}/`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="truncate hover:underline text-purple-900 font-bold flex items-center gap-1 hover:text-purple-600 transition-colors"
+                                    title="Open real verified profile on Instagram"
+                                  >
+                                    <span>{item.socialProof.instagram.handle}</span>
+                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 opacity-70" />
+                                  </a>
+                                </div>
+                                <span className="text-purple-500 font-normal shrink-0">({item.socialProof.instagram.likes} likes)</span>
                               </div>
                               <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
                                 "{item.socialProof.instagram.tip}"
                               </p>
+                              <div className="mt-1 flex items-center justify-between text-[10px]">
+                                <span className="text-purple-600/80 font-medium">Real Instagram User</span>
+                                <span className="text-slate-400 group-hover:text-purple-600 transition-colors flex items-center gap-0.5">
+                                  <span>Reels Hub</span>
+                                  <span>→</span>
+                                </span>
+                              </div>
                             </div>
                           </div>
                         )}

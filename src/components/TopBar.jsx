@@ -6,7 +6,10 @@ import {
   AlertTriangle,
   Menu,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  PanelLeft,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
 
 export default function TopBar({
@@ -16,7 +19,9 @@ export default function TopBar({
   onOpenPlanGenerator,
   onSimulateEmergency,
   onOpenNewsRadar,
-  newsAlerts
+  newsAlerts,
+  isSidebarOpen,
+  onToggleSidebar
 }) {
   const getTabTitle = () => {
     switch (activeTab) {
@@ -38,16 +43,30 @@ export default function TopBar({
   return (
     <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 lg:px-10 py-4 shadow-xs">
       <div className="flex items-center justify-between gap-4">
-        {/* Breadcrumb & Section Title */}
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-            <span>{currentDestination} Trip</span>
-            <span>/</span>
-            <span className="text-indigo-600 font-bold">{getTabTitle()}</span>
+        {/* Left: Sidebar Toggle Button + Breadcrumb & Section Title */}
+        <div className="flex items-center gap-3.5">
+          <button
+            onClick={onToggleSidebar}
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200 shadow-xs"
+            title={isSidebarOpen ? "Collapse Sidebar" : "Open Sidebar"}
+          >
+            {isSidebarOpen ? (
+              <PanelLeftClose className="w-5 h-5 text-slate-600" />
+            ) : (
+              <PanelLeftOpen className="w-5 h-5 text-indigo-600" />
+            )}
+          </button>
+
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+              <span>{currentDestination} Trip</span>
+              <span>/</span>
+              <span className="text-indigo-600 font-bold">{getTabTitle()}</span>
+            </div>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight mt-0.5">
+              {getTabTitle()}
+            </h2>
           </div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight mt-0.5">
-            {getTabTitle()}
-          </h2>
         </div>
 
         {/* Spacious Action Area */}

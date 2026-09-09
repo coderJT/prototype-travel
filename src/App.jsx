@@ -27,6 +27,7 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState(INITIAL_CHAT_MESSAGES);
   const [agenda, setAgenda] = useState(INITIAL_POKER_AGENDA);
   const [emergencySimulated, setEmergencySimulated] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Modals
   const [isNewsRadarOpen, setIsNewsRadarOpen] = useState(false);
@@ -160,6 +161,8 @@ export default function App() {
         onOpenNewsRadar={() => setIsNewsRadarOpen(true)}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         currentDestination={currentDestination}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(prev => !prev)}
       />
 
       {/* Main Workspace Area with Spacious TopBar */}
@@ -172,6 +175,8 @@ export default function App() {
           onSimulateEmergency={handleSimulateEmergency}
           onOpenNewsRadar={() => setIsNewsRadarOpen(true)}
           newsAlerts={newsAlerts}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         />
 
         {/* Spacious Main Content Area */}

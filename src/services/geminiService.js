@@ -76,7 +76,21 @@ Format strictly as JSON matching this schema:
         "advocate": "Alice-Bot",
         "description": "Engaging, practical description",
         "status": "confirmed",
-        "location": "District or neighborhood"
+        "location": "District or neighborhood",
+        "socialProof": {
+          "xhs": {
+            "author": "XHS Creator Name",
+            "likes": "1.8w",
+            "tag": "避坑指南",
+            "tip": "Concrete crowd avoidance or hidden gem advice from Xiaohongshu / RedNote"
+          },
+          "instagram": {
+            "handle": "@travel_creator",
+            "likes": "34.2k",
+            "reelDuration": "0:25",
+            "tip": "Photography framing or viral aesthetic angle"
+          }
+        }
       }
     ]
   }

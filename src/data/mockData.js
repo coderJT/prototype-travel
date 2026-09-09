@@ -100,7 +100,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Charlie-Bot (Gentle walking pace to shake jet lag)',
         description: 'Autumn foliage stroll and traditional teahouse rest.',
         status: 'confirmed',
-        location: 'Shinjuku'
+        location: 'Shinjuku',
+        socialProof: {
+          xhs: {
+            author: '关东私藏指南',
+            likes: '1.2w',
+            tag: '避坑指南',
+            tip: '下午4点停止入园！千万别从千驮谷门进，从新宿门进直通日式庭园茶室出片率最高。'
+          },
+          instagram: {
+            handle: '@wanderlust_charlie',
+            likes: '18.4k',
+            reelDuration: '0:22',
+            tip: 'Golden hour sunlight filtering through the maple trees near Taiwan Pavilion.'
+          }
+        }
       },
       {
         id: 'item-1-3',
@@ -112,7 +126,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Alice-Bot (Unmatched value & smokey vibes)',
         description: 'Small alleyway izakayas with charcoal skewers, cold draft highballs, and lively atmosphere.',
         status: 'confirmed',
-        location: 'West Shinjuku'
+        location: 'West Shinjuku',
+        socialProof: {
+          xhs: {
+            author: '吃不胖的Alice',
+            likes: '2.4w',
+            tag: '宝藏美食',
+            tip: '避开主街第一家排队游客店，拐进中段巷内炭烤老店只要¥200一串，性价比拉满！'
+          },
+          instagram: {
+            handle: '@nightlife.tokyo',
+            likes: '61.5k',
+            reelDuration: '0:34',
+            tip: 'Epic cyberpunk lantern reflection shots, especially after a light evening drizzle.'
+          }
+        }
       },
       {
         id: 'item-1-4',
@@ -124,7 +152,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Bob-Bot (Bob goes; Alice & Charlie can opt out)',
         description: 'Intimate 6-seat micro bars. Perfect split-itinerary flexibility!',
         status: 'optional',
-        location: 'Golden Gai'
+        location: 'Golden Gai',
+        socialProof: {
+          xhs: {
+            author: '微醺东京',
+            likes: '9,840',
+            tag: '夜生活防坑',
+            tip: '多数小酒吧有¥500~¥1,000的Table Charge（座位费），进店前先看门前明码标价小牌。'
+          },
+          instagram: {
+            handle: '@tokyobynight',
+            likes: '34.2k',
+            reelDuration: '0:19',
+            tip: 'Narrow second-floor staircases provide the classic atmospheric low-angle framing.'
+          }
+        }
       }
     ]
   },
@@ -145,7 +187,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Charlie-Bot (Respects Bob’s 10am sleep schedule)',
         description: 'Norwegian-Japanese heritage cafe with incredible pastries and zero rush.',
         status: 'confirmed',
-        location: 'Asakusa'
+        location: 'Asakusa',
+        socialProof: {
+          xhs: {
+            author: '东京咖啡物语',
+            likes: '8,420',
+            tag: '宝藏咖啡',
+            tip: '二楼榻榻米木窗出片绝美，推荐香草华夫饼+冰手冲！'
+          },
+          instagram: {
+            handle: '@cafelover_tokyo',
+            likes: '29.3k',
+            reelDuration: '0:18',
+            tip: 'Morning Scandinavian light through the curved glass facade.'
+          }
+        }
       },
       {
         id: 'item-2-2',
@@ -157,7 +213,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Charlie-Bot & Alice-Bot (Street snacks & fortune slips)',
         description: 'Oldest temple in Tokyo, melonpan snacks, incense ceremony.',
         status: 'confirmed',
-        location: 'Asakusa'
+        location: 'Asakusa',
+        socialProof: {
+          xhs: {
+            author: '东京漫游日记',
+            likes: '1.8w',
+            tag: '避坑指南',
+            tip: '雷门大灯笼正下方仰拍避人群；浅草文化观光中心8F免费俯瞰五重塔和仲见世全景！'
+          },
+          instagram: {
+            handle: '@wanderlust_charlie',
+            likes: '24.1k',
+            reelDuration: '0:32',
+            tip: 'Incense burner smoke backlit by afternoon sun makes for mystical portraits.'
+          }
+        }
       },
       {
         id: 'item-2-3',
@@ -169,7 +239,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Bob-Bot (Taiko no Tatsujin, Gachapon, VR)',
         description: 'Multi-floor arcade battles and retro gaming culture.',
         status: 'confirmed',
-        location: 'Akihabara'
+        location: 'Akihabara',
+        socialProof: {
+          xhs: {
+            author: '秋叶原玩家',
+            likes: '1.1w',
+            tag: '抓娃娃避坑',
+            tip: '主街大店抓力普遍松，去横巷GiGO三号馆或Mandarake淘古董游戏卡带更划算。'
+          },
+          instagram: {
+            handle: '@tokyogamer_bob',
+            likes: '45.7k',
+            reelDuration: '0:30',
+            tip: 'Taiko drum rhythm game action shots with neon screen reflections.'
+          }
+        }
       },
       {
         id: 'item-2-4',
@@ -181,7 +265,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Alice-Bot (Custom spice & numbing pepper levels for all)',
         description: 'Famous demon drum ramen. Veggie miso broth option available for dietary needs.',
         status: 'confirmed',
-        location: 'Kanda'
+        location: 'Kanda',
+        socialProof: {
+          xhs: {
+            author: '吃不胖的Alice',
+            likes: '1.6w',
+            tag: '排队指南',
+            tip: '建议选普通辣+少麻（Medium/Less Numbing）最能品出醇厚豚骨味噌底！'
+          },
+          instagram: {
+            handle: '@ramen_adventures',
+            likes: '52.1k',
+            reelDuration: '0:25',
+            tip: 'Slow motion steam rising off the demon mask bowl under warm amber spotlights.'
+          }
+        }
       }
     ]
   },
@@ -203,7 +301,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Full Group Unanimous Consensus',
         description: 'Wading through barefoot water exhibitions and crystalline flower universes.',
         status: 'confirmed',
-        location: 'Toyosu'
+        location: 'Toyosu',
+        socialProof: {
+          xhs: {
+            author: '光影探索者',
+            likes: '2.8w',
+            tag: '拍照避坑',
+            tip: '必须穿短裤或易卷起的裤子（水深及膝）！地板反光镜面多，穿裙子务必穿安全裤。'
+          },
+          instagram: {
+            handle: '@teamlab_aesthetic',
+            likes: '68.4k',
+            reelDuration: '0:35',
+            tip: 'The Crystal Universe corridor sparkles best on 0.5x wide angle video.'
+          }
+        }
       },
       {
         id: 'item-3-2',
@@ -215,7 +327,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Alice-Bot (Direct dock-fresh sashimi & grilled eel)',
         description: 'Next generation fish market with pristine seafood dining stalls.',
         status: 'confirmed',
-        location: 'Toyosu Market'
+        location: 'Toyosu Market',
+        socialProof: {
+          xhs: {
+            author: '吃不胖的Alice',
+            likes: '1.4w',
+            tag: '海鲜排队',
+            tip: '大和寿司排队常超2小时，推荐隔壁的“八千代”炸海鲜定食与“寿司大”分店，鲜甜度一样高！'
+          },
+          instagram: {
+            handle: '@tokyofoodie_guide',
+            likes: '39.8k',
+            reelDuration: '0:24',
+            tip: 'Macro close-up shots of fatty Otoro tuna glistening under market lights.'
+          }
+        }
       },
       {
         id: 'item-3-3',
@@ -228,7 +354,21 @@ export const INITIAL_ITINERARY = [
         description: 'Futuristic river boat cruising under Rainbow Bridge.',
         status: 'threatened', // Threatened by weather!
         disruptionReason: 'Coastal gale force winds warning from Tokyo Bay Maritime Authority',
-        location: 'Odaiba'
+        location: 'Odaiba',
+        socialProof: {
+          xhs: {
+            author: '气象避坑台',
+            likes: '6,210',
+            tag: '台风预警',
+            tip: '台风或强阵风天台场水上巴士必定停航！室内Plan B建议首选筑地荞麦研习班或六本木Hills。'
+          },
+          instagram: {
+            handle: '@bay_cruises_jp',
+            likes: '22.1k',
+            reelDuration: '0:15',
+            tip: 'Sunset silhouette through the tinted curved dome canopy.'
+          }
+        }
       },
       {
         id: 'item-3-4',
@@ -240,7 +380,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Bob-Bot',
         description: 'Sega arcade coasters and illuminated bay views.',
         status: 'confirmed',
-        location: 'Odaiba'
+        location: 'Odaiba',
+        socialProof: {
+          xhs: {
+            author: '室内游玩达人',
+            likes: '1.5w',
+            tag: '室内救星',
+            tip: '雨天完全不淋雨！购买晚间优惠通票（Night Pass）立省¥1,500日元。'
+          },
+          instagram: {
+            handle: '@tokyovibe_bob',
+            likes: '31.2k',
+            reelDuration: '0:28',
+            tip: 'Illuminated Rainbow Bridge from the Decks third floor observation balcony.'
+          }
+        }
       }
     ]
   },
@@ -261,7 +415,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Charlie-Bot (Zero chain stores, indie coffee & vintage)',
         description: 'Bohemian neighborhood with pedestrian-only alleys and craft curry.',
         status: 'confirmed',
-        location: 'Shimokitazawa'
+        location: 'Shimokitazawa',
+        socialProof: {
+          xhs: {
+            author: '下北泽野生买手',
+            likes: '2.1w',
+            tag: '古着淘货',
+            tip: '西口走进去是低价旧衣堆，真正宝藏在北口小街的“Stick Out”和“New York Joe”！'
+          },
+          instagram: {
+            handle: '@vintage_tokyo',
+            likes: '48.9k',
+            reelDuration: '0:29',
+            tip: 'Pedestrian railroad track cafes and retro vinyl sleeve flat-lays.'
+          }
+        }
       },
       {
         id: 'item-4-2',
@@ -273,7 +441,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Bob-Bot & Charlie-Bot (Epic skyline photos at twilight)',
         description: 'Standing 229 meters above Shibuya scramble crossing with glass corners.',
         status: 'confirmed',
-        location: 'Shibuya'
+        location: 'Shibuya',
+        socialProof: {
+          xhs: {
+            author: '摄影师Bob',
+            likes: '3.1w',
+            tag: '出片天花板',
+            tip: '提前2周官网抢日落场次！顶层玻璃四角排队需快速换手，手机挂绳务必提前系好。'
+          },
+          instagram: {
+            handle: '@tokyo.aesthetic',
+            likes: '72.3k',
+            reelDuration: '0:42',
+            tip: 'Golden hour transitions directly into neon twilight over the 5-way scramble crossing.'
+          }
+        }
       },
       {
         id: 'item-4-3',
@@ -285,7 +467,21 @@ export const INITIAL_ITINERARY = [
         advocate: 'Main AI Compromise (Splurging on final night within limits)',
         description: 'Traditional tatami room with tableside kimono-dressed cooking. A memorable farewell.',
         status: 'confirmed',
-        location: 'Ningyocho'
+        location: 'Ningyocho',
+        socialProof: {
+          xhs: {
+            author: '东京米其林清单',
+            likes: '1.9w',
+            tag: '寿喜烧天花板',
+            tip: '黑毛和牛A5特上牛肉入口即化，寿喜烧汤底裹生鸡蛋是神仙吃法，需提前至少3周预订！'
+          },
+          instagram: {
+            handle: '@japan_food_guide',
+            likes: '89.4k',
+            reelDuration: '0:45',
+            tip: 'Tableside sizzling marbling beef dip in fresh egg yolk slow-motion reel.'
+          }
+        }
       }
     ]
   }

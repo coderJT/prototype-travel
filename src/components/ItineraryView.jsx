@@ -28,6 +28,12 @@ import DemandAiBookingModal from './DemandAiBookingModal';
 import HowToUseVisualGuide from './HowToUseVisualGuide';
 import RednoteTravelModal from './RednoteTravelModal';
 import InstagramTravelModal from './InstagramTravelModal';
+import WiseCurrencyModal from './WiseCurrencyModal';
+import {
+  SUPPORTED_CURRENCIES,
+  MID_MARKET_RATES,
+  convertWithWise
+} from '../services/wiseService';
 import {
   isHotelBooked,
   isFlightBooked,
@@ -55,11 +61,23 @@ export default function ItineraryView({
   const [filterCategory, setFilterCategory] = useState('all');
   const [showVisualGuide, setShowVisualGuide] = useState(false);
 
+  // Currency & Wise State
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [isWiseModalOpen, setIsWiseModalOpen] = useState(false);
+
   // Social Intelligence State (RedNote & Instagram)
   const [isRednoteOpen, setIsRednoteOpen] = useState(false);
   const [rednoteQuery, setRednoteQuery] = useState('');
   const [isInstagramOpen, setIsInstagramOpen] = useState(false);
   const [instagramQuery, setInstagramQuery] = useState('');
+
+  const formatCost = (costInUsd) => {
+    if (selectedCurrency === 'USD') return `$${costInUsd}`;
+    if (selectedCurrency === 'JPY') return `¥${convertWithWise(costInUsd, 'USD', 'JPY').toLocaleString()}`;
+    if (selectedCurrency === 'SGD') return `S$${convertWithWise(costInUsd, 'USD', 'SGD')}`;
+    if (selectedCurrency === 'EUR') return `€${convertWithWise(costInUsd, 'USD', 'EUR')}`;
+    return `$${costInUsd}`;
+  };
 
   // Demand AI state
   const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
@@ -232,6 +250,56 @@ export default function ItineraryView({
               </button>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Wise Multi-Currency & Mid-Market Rate Bar */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-xl text-xs font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Wise FX: 1 USD = ¥153.42 JPY</span>
+          </div>
+          <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+            Real mid-market rate • 0% hidden bank spread • Est. $42.60 USD saved
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          {/* Currency Switcher */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
+            <button
+              onClick={() => setSelectedCurrency('USD')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                selectedCurrency === 'USD' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              USD ($)
+            </button>
+            <button
+              onClick={() => setSelectedCurrency('JPY')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                selectedCurrency === 'JPY' ? 'bg-white text-emerald-700 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              JPY (¥)
+            </button>
+            <button
+              onClick={() => setSelectedCurrency('SGD')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                selectedCurrency === 'SGD' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              SGD (S$)
+            </button>
+          </div>
+
+          <button
+            onClick={() => setIsWiseModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+          >
+            <span>💳 Wise Card Hub</span>
+          </button>
         </div>
       </div>
 
@@ -582,8 +650,8 @@ export default function ItineraryView({
                     </div>
 
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xs font-black text-amber-900 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
-                        ${item.costPerPerson} / person
+                      <span className="text-xs font-black text-amber-900 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200 shadow-2xs">
+                        {formatCost(item.costPerPerson)} / person
                       </span>
                       {isThreatened && (
                         <span className="px-3 py-1 rounded-xl bg-amber-200 text-amber-900 text-xs font-bold">
@@ -605,6 +673,61 @@ export default function ItineraryView({
                     <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">
                       {item.description}
                     </p>
+
+                    {/* Integrated Social Proof & Grounding Strip (XHS & Instagram Referenced) */}
+                    {item.socialProof && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-slate-100">
+                        {/* RedNote / XHS Grounding */}
+                        {item.socialProof.xhs && (
+                          <div
+                            onClick={() => {
+                              setRednoteQuery(item.title);
+                              setIsRednoteOpen(true);
+                            }}
+                            className="bg-rose-50/70 hover:bg-rose-50 border border-rose-200/80 rounded-xl p-2.5 flex items-start gap-2.5 transition-all cursor-pointer group shadow-2xs"
+                          >
+                            <span className="text-sm shrink-0">📕</span>
+                            <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
+                              <div className="flex items-center gap-1.5 font-bold text-rose-800">
+                                <span className="px-1.5 py-0.2 bg-rose-100 rounded text-[10px]">
+                                  {item.socialProof.xhs.tag || '避坑指南'}
+                                </span>
+                                <span className="truncate">@{item.socialProof.xhs.author}</span>
+                                <span className="text-rose-500 font-normal">({item.socialProof.xhs.likes} likes)</span>
+                              </div>
+                              <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
+                                "{item.socialProof.xhs.tip}"
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Instagram Visual Proof */}
+                        {item.socialProof.instagram && (
+                          <div
+                            onClick={() => {
+                              setInstagramQuery(item.title);
+                              setIsInstagramOpen(true);
+                            }}
+                            className="bg-gradient-to-r from-purple-50/70 to-pink-50/70 hover:from-purple-50 hover:to-pink-50 border border-purple-200/80 rounded-xl p-2.5 flex items-start gap-2.5 transition-all cursor-pointer group shadow-2xs"
+                          >
+                            <span className="text-sm shrink-0">📸</span>
+                            <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
+                              <div className="flex items-center gap-1.5 font-bold text-purple-800">
+                                <span className="px-1.5 py-0.2 bg-purple-100 rounded text-[10px]">
+                                  IG Reel {item.socialProof.instagram.reelDuration}
+                                </span>
+                                <span className="truncate">{item.socialProof.instagram.handle}</span>
+                                <span className="text-purple-500 font-normal">({item.socialProof.instagram.likes} likes)</span>
+                              </div>
+                              <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
+                                "{item.socialProof.instagram.tip}"
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {isThreatened && (
@@ -803,6 +926,14 @@ export default function ItineraryView({
         onClose={() => setIsInstagramOpen(false)}
         currentDestination={currentDestination}
         initialSearchQuery={instagramQuery}
+      />
+
+      {/* Wise Currency Exchange & Multi-Currency Card Modal */}
+      <WiseCurrencyModal
+        isOpen={isWiseModalOpen}
+        onClose={() => setIsWiseModalOpen(false)}
+        totalTripUsd={620}
+        onCurrencyChange={(cur) => setSelectedCurrency(cur)}
       />
     </div>
   );

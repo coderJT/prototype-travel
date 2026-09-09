@@ -27,6 +27,7 @@ export default function Sidebar({
   onOpenApiKeyModal,
   onOpenRednote,
   onOpenInstagram,
+  onOpenWise,
   currentDestination,
   isOpen,
   onToggle
@@ -216,6 +217,20 @@ export default function Sidebar({
               </button>
             )}
           </div>
+
+          {onOpenWise && (
+            <button
+              onClick={onOpenWise}
+              className="w-full flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+            >
+              <div className="flex items-center gap-1.5">
+                <span>💳 Wise FX Card</span>
+              </div>
+              <span className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                1 USD = ¥153.42
+              </span>
+            </button>
+          )}
 
           <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">

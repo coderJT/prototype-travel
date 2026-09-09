@@ -11,6 +11,7 @@ import ApiKeyModal from './components/ApiKeyModal';
 import PlanGeneratorModal from './components/PlanGeneratorModal';
 import RednoteTravelModal from './components/RednoteTravelModal';
 import InstagramTravelModal from './components/InstagramTravelModal';
+import WiseCurrencyModal from './components/WiseCurrencyModal';
 import {
   INITIAL_TRAVELERS,
   INITIAL_ITINERARY,
@@ -37,6 +38,7 @@ export default function App() {
   const [isPlanGeneratorOpen, setIsPlanGeneratorOpen] = useState(false);
   const [isRednoteModalOpen, setIsRednoteModalOpen] = useState(false);
   const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
+  const [isWiseModalOpen, setIsWiseModalOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -170,6 +172,7 @@ export default function App() {
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         onOpenRednote={() => setIsRednoteModalOpen(true)}
         onOpenInstagram={() => setIsInstagramModalOpen(true)}
+        onOpenWise={() => setIsWiseModalOpen(true)}
         currentDestination={currentDestination}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(prev => !prev)}
@@ -294,6 +297,13 @@ export default function App() {
         isOpen={isInstagramModalOpen}
         onClose={() => setIsInstagramModalOpen(false)}
         currentDestination={currentDestination}
+      />
+
+      {/* Wise Currency Exchange & Card Modal */}
+      <WiseCurrencyModal
+        isOpen={isWiseModalOpen}
+        onClose={() => setIsWiseModalOpen(false)}
+        totalTripUsd={620}
       />
     </div>
   );

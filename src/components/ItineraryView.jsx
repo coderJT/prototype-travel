@@ -19,10 +19,13 @@ import {
   Zap,
   Receipt,
   CheckCircle2,
-  Ticket
+  Ticket,
+  BookOpen,
+  RotateCcw
 } from 'lucide-react';
 import { generateBookingComUrl, REAL_WORLD_HOTELS, REAL_WORLD_FLIGHTS } from '../services/bookingService';
 import DemandAiBookingModal from './DemandAiBookingModal';
+import HowToUseVisualGuide from './HowToUseVisualGuide';
 import {
   isHotelBooked,
   isFlightBooked,
@@ -35,15 +38,20 @@ import {
 export default function ItineraryView({
   itinerary,
   travelers = [],
+  currentDestination = 'Tokyo',
   onSimulateEmergency,
   onNavigateToMeeting,
+  onNavigateToPersonal,
   emergencySimulated,
   onResolveEmergencyDirectly,
   onOpenPlanGenerator,
-  onNavigateToBookings
+  onNavigateToBookings,
+  onLoadDemoItinerary,
+  onResetItinerary
 }) {
   const [activeDay, setActiveDay] = useState(1);
   const [filterCategory, setFilterCategory] = useState('all');
+  const [showVisualGuide, setShowVisualGuide] = useState(false);
 
   // Demand AI state
   const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
@@ -81,7 +89,8 @@ export default function ItineraryView({
     }
   };
 
-  const currentDayData = itinerary.find(d => d.day === activeDay) || itinerary[0];
+  const hasItinerary = Array.isArray(itinerary) && itinerary.length > 0;
+  const currentDayData = hasItinerary ? (itinerary.find(d => d.day === activeDay) || itinerary[0]) : null;
 
   const getCategoryIcon = (category) => {
     switch (category) {
@@ -101,21 +110,136 @@ export default function ItineraryView({
     }
   };
 
-  const filteredItems = currentDayData.items.filter(item => {
+  const filteredItems = currentDayData?.items ? currentDayData.items.filter(item => {
     if (filterCategory === 'all') return true;
     if (filterCategory === 'dining') return item.type === 'dining';
     if (filterCategory === 'activity') return item.type === 'activity';
     return true;
-  });
+  }) : [];
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 space-y-8">
-      {/* Friendly Real-time World News Alert Banner */}
-      <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
-        emergencySimulated
-          ? 'bg-gradient-to-r from-amber-50 via-rose-50 to-orange-50 border-amber-300 shadow-sm'
-          : 'bg-white border-slate-200 shadow-xs'
-      }`}>
+      {/* Professional Trip Planner Master Header */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-indigo-50 text-indigo-700 font-black text-[11px] rounded-full uppercase tracking-wider border border-indigo-100/80">
+                🧭 EscapePlan Trip Master
+              </span>
+              {hasItinerary ? (
+                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 font-bold text-[11px] rounded-full border border-emerald-200/80 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>AI Consensus Plan Active</span>
+                </span>
+              ) : (
+                <span className="px-3 py-1 bg-amber-50 text-amber-700 font-bold text-[11px] rounded-full border border-amber-200/80 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Zero-State • Ready to Plan</span>
+                </span>
+              )}
+              <span className="px-3 py-1 bg-slate-100 text-slate-700 font-medium text-[11px] rounded-full border border-slate-200">
+                {travelers.length > 0 ? `${travelers.length} Travelers (${travelers.map(t => t.name).join(', ')})` : '3 Travelers (Alice, Bob, Charlie)'}
+              </span>
+            </div>
+            
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
+              <span>{currentDestination} Squad Expedition</span>
+              <span className="text-slate-300 font-light hidden sm:inline">/</span>
+              <span className="text-sm sm:text-base font-semibold text-slate-500">
+                {hasItinerary ? `${itinerary.length} Days Schedule` : 'Autonomous AI Trip Planner'}
+              </span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-3xl">
+              Professional multi-agent travel platform with Booking.com Demand AI autonomous fulfillment, private confidential preferences, and live weather radar.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            {/* Toggle visual guide button */}
+            <button
+              onClick={() => setShowVisualGuide(!showVisualGuide)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border shadow-xs cursor-pointer ${
+                showVisualGuide
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200'
+                  : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>{showVisualGuide ? 'Hide Guide' : '📖 How It Works'}</span>
+            </button>
+
+            {/* Plan Generator button */}
+            {onOpenPlanGenerator && (
+              <button
+                onClick={onOpenPlanGenerator}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold rounded-2xl shadow-sm transition-all cursor-pointer active:scale-95"
+              >
+                <Wand2 className="w-4 h-4 text-amber-300" />
+                <span>✨ New Plan</span>
+              </button>
+            )}
+
+            {/* Demo itinerary reload / reset */}
+            {hasItinerary && onResetItinerary && (
+              <button
+                onClick={onResetItinerary}
+                title="Reset trip to see zero-state guide or start fresh"
+                className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-rose-50 text-slate-500 hover:text-rose-600 text-xs font-bold rounded-2xl border border-slate-200 hover:border-rose-200 transition-all cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Trip</span>
+              </button>
+            )}
+
+            {!hasItinerary && onLoadDemoItinerary && (
+              <button
+                onClick={onLoadDemoItinerary}
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-2xl border border-indigo-200 transition-all cursor-pointer active:scale-95"
+              >
+                <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span>Load Demo Plan</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Visual Guide Mode (Active when no itinerary exists OR toggled by user) */}
+      {(!hasItinerary || showVisualGuide) ? (
+        <div className="space-y-6">
+          {hasItinerary && showVisualGuide && (
+            <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-2xl flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5 text-xs text-indigo-900 font-bold">
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <span>You are currently viewing the Visual Instructions. Your active itinerary is saved.</span>
+              </div>
+              <button
+                onClick={() => setShowVisualGuide(false)}
+                className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
+              >
+                Return to Active Itinerary ➔
+              </button>
+            </div>
+          )}
+
+          <HowToUseVisualGuide
+            onGeneratePlan={onOpenPlanGenerator}
+            onLoadDemo={onLoadDemoItinerary}
+            onNavigateToMeeting={onNavigateToMeeting}
+            onNavigateToPersonal={onNavigateToPersonal}
+            onNavigateToBookings={onNavigateToBookings}
+            hasItinerary={hasItinerary}
+          />
+        </div>
+      ) : (
+        <>
+          {/* Friendly Real-time World News Alert Banner */}
+          <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
+            emergencySimulated
+              ? 'bg-gradient-to-r from-amber-50 via-rose-50 to-orange-50 border-amber-300 shadow-sm'
+              : 'bg-white border-slate-200 shadow-xs'
+          }`}>
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs ${
@@ -592,6 +716,8 @@ export default function ItineraryView({
           );
         })}
       </div>
+      </>
+      )}
 
       {/* Demand AI Booking & Voucher Modal */}
       <DemandAiBookingModal

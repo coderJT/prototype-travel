@@ -33,19 +33,20 @@ export default function Sidebar({
 
   const navItems = [
     {
+      id: 'itinerary',
+      label: 'Trip Itinerary',
+      description: 'Master Timeline & Visual Guide',
+      icon: Calendar,
+      badge: 'Home',
+      badgeColor: 'bg-indigo-100 text-indigo-800'
+    },
+    {
       id: 'meeting',
       label: 'The Round Table',
       description: 'Collaborative Squad Debate',
       icon: Users,
-      badge: 'Live',
+      badge: 'Wide Arena',
       badgeColor: 'bg-emerald-100 text-emerald-800'
-    },
-    {
-      id: 'itinerary',
-      label: 'Master Itinerary',
-      description: 'Adaptive Multi-Day Schedule',
-      icon: Calendar,
-      badge: null
     },
     {
       id: 'personal',
@@ -58,9 +59,9 @@ export default function Sidebar({
     {
       id: 'bookings',
       label: 'Live Bookings',
-      description: 'Flights & Hotel Aggregators',
+      description: 'Demand AI Autonomous Booking',
       icon: Plane,
-      badge: 'Real',
+      badge: 'Sandbox v3.2',
       badgeColor: 'bg-blue-100 text-blue-800'
     },
     {

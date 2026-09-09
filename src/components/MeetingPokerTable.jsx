@@ -178,7 +178,7 @@ export default function MeetingPokerTable({
     <div className={`transition-all ${
       isFullscreen
         ? 'fixed inset-0 z-50 bg-[#f8fafc] overflow-y-auto p-6 sm:p-10 flex flex-col justify-between animate-in fade-in zoom-in-95 duration-200'
-        : 'max-w-7xl mx-auto px-6 lg:px-10 py-8 space-y-8'
+        : 'w-full max-w-[1760px] mx-auto px-4 sm:px-8 lg:px-12 py-8 space-y-8'
     }`}>
       {/* Top Banner with Fullscreen Expand Trigger */}
       <div className="bg-white border border-slate-200/80 p-6 sm:p-8 rounded-3xl shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -244,12 +244,12 @@ export default function MeetingPokerTable({
         <div className={`${showLogDrawer ? 'lg:col-span-8' : 'lg:col-span-12'} transition-all space-y-6`}>
           {/* Table Outer Ring (Pastel Wooden / Clean Glow Ring) */}
           <div className={`relative rounded-[56px] ${isFullscreen ? 'p-8 sm:p-14' : 'p-6 sm:p-10'} table-ring border border-slate-200 shadow-sm`}>
-            {/* The Round Table Surface */}
-            <div className={`relative rounded-[46px] round-table-surface border-2 border-white ${isFullscreen ? 'p-8 sm:p-12 min-h-[740px]' : 'p-6 sm:p-10 min-h-[660px]'} flex flex-col justify-between overflow-hidden shadow-inner`}>
+            {/* The Round Table Surface - WIDE BY DEFAULT */}
+            <div className={`relative rounded-[46px] round-table-surface border-2 border-white ${isFullscreen ? 'p-8 sm:p-14 min-h-[820px]' : 'p-6 sm:p-10 min-h-[760px]'} flex flex-col justify-between overflow-hidden shadow-inner`}>
               
               {/* Decorative Ring */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
-                <div className={`${isFullscreen ? 'w-[500px] h-[500px]' : 'w-96 h-96'} rounded-full border-4 border-dashed border-indigo-400`}></div>
+                <div className={`${isFullscreen ? 'w-[560px] h-[560px]' : 'w-[480px] h-[480px]'} rounded-full border-4 border-dashed border-indigo-400`}></div>
               </div>
 
               {/* SEAT 1: Alice (Top Left) & SEAT 2: Bob (Top Right) */}
@@ -392,7 +392,7 @@ export default function MeetingPokerTable({
                 )}
 
                 {/* THE DISCUSSION CARD (CENTER OF TABLE) */}
-                <div className={`w-full ${isFullscreen ? 'max-w-4xl' : 'max-w-2xl'} bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-3xl p-6 shadow-md space-y-4`}>
+                <div className="w-full max-w-4xl bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-3xl p-6 shadow-md space-y-4">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-2.5 text-xs sm:text-sm">
                       <span className="text-xl">⛈️</span>

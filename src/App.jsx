@@ -18,7 +18,7 @@ import {
 } from './data/mockData';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('meeting');
+  const [activeTab, setActiveTab] = useState('itinerary');
   const [travelers, setTravelers] = useState(INITIAL_TRAVELERS);
   const [currentTraveler, setCurrentTraveler] = useState(INITIAL_TRAVELERS[0]); // Alice
   const [itinerary, setItinerary] = useState(INITIAL_ITINERARY);
@@ -211,12 +211,23 @@ export default function App() {
             <ItineraryView
               itinerary={itinerary}
               travelers={travelers}
+              currentDestination={currentDestination}
               onSimulateEmergency={handleSimulateEmergency}
               onNavigateToMeeting={() => setActiveTab('meeting')}
+              onNavigateToPersonal={() => setActiveTab('personal')}
               emergencySimulated={emergencySimulated}
               onResolveEmergencyDirectly={() => handleResolveDilemma('opt-c')}
               onOpenPlanGenerator={() => setIsPlanGeneratorOpen(true)}
               onNavigateToBookings={() => setActiveTab('bookings')}
+              onLoadDemoItinerary={() => {
+                setItinerary(INITIAL_ITINERARY);
+                setCurrentDestination('Tokyo');
+                showToast('🎉 Loaded Tokyo 4-Day Demo Trip!');
+              }}
+              onResetItinerary={() => {
+                setItinerary([]);
+                showToast('Cleared itinerary. Showing How-To-Use Visual Guide.');
+              }}
             />
           )}
 

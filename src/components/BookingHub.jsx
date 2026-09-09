@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Plane,
   Building2,
@@ -16,7 +16,10 @@ import {
   Luggage,
   BedDouble,
   MapPin,
-  Star
+  Star,
+  Code2,
+  Layers,
+  Wand2
 } from 'lucide-react';
 import {
   REAL_WORLD_FLIGHTS,
@@ -29,7 +32,7 @@ import {
 } from '../services/bookingService';
 
 export default function BookingHub({ currentDestination = 'Tokyo' }) {
-  const [activeCategory, setActiveCategory] = useState('flights'); // 'flights' or 'hotels'
+  const [activeCategory, setActiveCategory] = useState('flights'); // 'flights', 'hotels', 'widgets'
   const [origin, setOrigin] = useState('SIN');
   const [destAirport, setDestAirport] = useState('HND');
   const [departDate, setDepartDate] = useState('2026-11-12');
@@ -64,21 +67,20 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
             Live Flight & Hotel Booking Hub ✈️🏨
           </h2>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Directly linked to <strong>Google Flights</strong>, <strong>Skyscanner</strong>, <strong>Booking.com</strong>, and <strong>Agoda</strong>. 
-            Pre-configured with group passenger counts, dates, and AI-recommended options without needing private API credentials.
+            Connected with <strong>Google Flights</strong>, <strong>Skyscanner</strong>, and <strong>Booking.com</strong> deep links, plus plug-and-play travel widget SDKs for instant hackathon demos.
           </p>
         </div>
 
         <div className="flex items-center gap-2 bg-indigo-50/70 px-4 py-2.5 rounded-2xl border border-indigo-100 text-xs text-indigo-800 font-bold shadow-xs">
           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>No Credentials Needed • Live Deep Links</span>
+          <span>Demo-Ready • Zero Credentials Required</span>
         </div>
       </div>
 
-      {/* Booking Category Switcher & Search Bar */}
+      {/* Navigation Switcher: Flights, Hotels, and Embeddable SDK Widgets */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
         {/* Toggle Pills */}
-        <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit">
+        <div className="flex flex-wrap items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-fit">
           <button
             onClick={() => setActiveCategory('flights')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
@@ -88,7 +90,7 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
             }`}
           >
             <Plane className="w-4 h-4" />
-            <span>Flight Deals & Schedules</span>
+            <span>Curated Flights (Google & Skyscanner)</span>
           </button>
 
           <button
@@ -100,11 +102,26 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
             }`}
           >
             <Building2 className="w-4 h-4" />
-            <span>Hotels & Group Apartments</span>
+            <span>Vetted Hotels (Booking.com & Agoda)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveCategory('frameworks')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeCategory === 'frameworks'
+                ? 'bg-white text-purple-700 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Code2 className="w-4 h-4 text-purple-600" />
+            <span>Travel SDKs & Frameworks Guide</span>
+            <span className="text-[9px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-extrabold">
+              For Demos
+            </span>
           </button>
         </div>
 
-        {/* Dynamic Route Inputs */}
+        {/* Dynamic Route Inputs (When in Flights mode) */}
         {activeCategory === 'flights' && (
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
             <div>
@@ -163,7 +180,172 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
       </div>
 
       {/* ==================================================== */}
-      {/* 1. FLIGHTS LISTING */}
+      {/* 1. FRAMEWORKS & LIBRARIES SHOWCASE (THE USER'S QUESTION) */}
+      {/* ==================================================== */}
+      {activeCategory === 'frameworks' && (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-pink-50 border border-purple-200/80 rounded-3xl p-6 sm:p-8 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2 text-xs font-black text-purple-800 uppercase tracking-wider">
+              <Code2 className="w-4 h-4 text-purple-600" />
+              <span>Top Frameworks & Libraries for Travel Prototypes</span>
+            </div>
+            <h3 className="text-xl font-black text-slate-900">
+              How Developers Build Travel & Flight Booking Prototypes
+            </h3>
+            <p className="text-sm text-slate-700 leading-relaxed max-w-3xl">
+              For prototypes and hackathons, you don’t need an airline IATA license. Here are the 4 main industry frameworks used to power live flight & hotel experiences:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 1. Travelpayouts / Aviasales Widget SDK */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✈️</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Travelpayouts / Aviasales SDK</h4>
+                    <span className="text-xs text-indigo-600 font-bold">@travelpayouts/widgets</span>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-extrabold">
+                  No Credentials Needed
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                The most popular turnkey travel affiliate widget in the world. Renders interactive flight and hotel search cards that embed straight into React with 1 script tag or npm package.
+              </p>
+
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 font-mono text-[11px] text-slate-700 overflow-x-auto">
+                {`<script src="https://tp.media/content?currency=usd&trs=27498" async></script>`}
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Best for: Embeddable search forms</span>
+                <a
+                  href="https://www.travelpayouts.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-indigo-600 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Website</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {/* 2. Duffel API */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">⚡</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Duffel API & React Components</h4>
+                    <span className="text-xs text-indigo-600 font-bold">@duffel/components & @duffel/api</span>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full font-extrabold">
+                  Instant Free Sandbox
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Known as the "Stripe for Travel". Provides pre-built React components like interactive airline seat selection maps, baggage selectors, and live flight search with free sandbox test tokens.
+              </p>
+
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 font-mono text-[11px] text-slate-700 overflow-x-auto">
+                {`import { DuffelAncillaries } from '@duffel/components';`}
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Best for: UI Components & Seatmaps</span>
+                <a
+                  href="https://duffel.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-indigo-600 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Website</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {/* 3. Amadeus Self-Service SDK */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🌐</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">Amadeus for Developers</h4>
+                    <span className="text-xs text-indigo-600 font-bold">amadeus (npm)</span>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-extrabold">
+                  Official GDS Sandbox
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                The global distribution system used by major airlines. Offers a completely free developer tier with 2,000 monthly API calls for flight search, hotel search, airport autocomplete, and flight price analysis.
+              </p>
+
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 font-mono text-[11px] text-slate-700 overflow-x-auto">
+                {`amadeus.shopping.flightOffersSearch.get({ originLocationCode: 'SIN', ... })`}
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Best for: Realistic airline data</span>
+                <a
+                  href="https://developers.amadeus.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-indigo-600 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Website</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {/* 4. Booking.com & Skyscanner Deep-Link Scheme (Current Engine) */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🔗</span>
+                  <div>
+                    <h4 className="text-base font-black text-slate-900">OTA Deep-Link Architecture</h4>
+                    <span className="text-xs text-indigo-600 font-bold">Google Flights / Booking URI Scheme</span>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-extrabold">
+                  Currently Implemented
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Generates dynamic, parameter-mapped URLs that link directly into real search results on Google Flights, Booking.com, and Agoda with zero rate limits, zero authentication keys, and 100% live inventory!
+              </p>
+
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 font-mono text-[11px] text-slate-700 overflow-x-auto">
+                {`https://www.google.com/travel/flights?q=Flights+to+HND+from+SIN...`}
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Best for: Reliable prototype demos</span>
+                <span className="text-emerald-600 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Active in this app
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================== */}
+      {/* 2. FLIGHTS LISTING */}
       {/* ==================================================== */}
       {activeCategory === 'flights' && (
         <div className="space-y-6">
@@ -205,7 +387,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                 }`}
               >
                 <div className="flex-1 space-y-4">
-                  {/* Top Meta */}
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="text-xl">{flight.airlineLogo}</span>
                     <span className="font-extrabold text-sm text-slate-900">{flight.airline}</span>
@@ -222,7 +403,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                     </span>
                   </div>
 
-                  {/* Flight Timeline */}
                   <div className="flex items-center gap-6 text-xs sm:text-sm">
                     <div>
                       <div className="font-black text-slate-900 text-base">{flight.departTime}</div>
@@ -245,14 +425,12 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                     </div>
                   </div>
 
-                  {/* Multi-Agent Advocate Origin */}
                   <div className="flex items-center gap-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
                     <Bot className="w-4 h-4 text-indigo-500 shrink-0" />
                     <span>Reason: <strong className="text-indigo-700">{flight.advocate}</strong></span>
                   </div>
                 </div>
 
-                {/* Price & Booking Deep Link */}
                 <div className="lg:border-l border-slate-200 lg:pl-8 flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-4 shrink-0">
                   <div className="text-left lg:text-right">
                     <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Per Traveler</div>
@@ -279,7 +457,7 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
       )}
 
       {/* ==================================================== */}
-      {/* 2. HOTELS LISTING */}
+      {/* 3. HOTELS LISTING */}
       {/* ==================================================== */}
       {activeCategory === 'hotels' && (
         <div className="space-y-6">
@@ -319,7 +497,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                   }`}
                 >
                   <div>
-                    {/* Hotel Image */}
                     <div className="relative aspect-video overflow-hidden bg-slate-100">
                       <img
                         src={hotel.image}
@@ -337,7 +514,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                       </div>
                     </div>
 
-                    {/* Content */}
                     <div className="p-6 space-y-3">
                       <div>
                         <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
@@ -352,7 +528,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                         </div>
                       </div>
 
-                      {/* Amenities */}
                       <div className="space-y-1.5 pt-2 border-t border-slate-100">
                         {hotel.amenities.map((am, i) => (
                           <div key={i} className="text-xs text-slate-600 flex items-center gap-2 font-medium">
@@ -362,7 +537,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                         ))}
                       </div>
 
-                      {/* Multi-Agent Advocate */}
                       <div className="p-3 bg-indigo-50/70 rounded-2xl border border-indigo-100 text-xs text-indigo-900 leading-relaxed">
                         <div className="font-bold flex items-center gap-1.5 mb-0.5 text-indigo-800">
                           <Bot className="w-3.5 h-3.5 text-indigo-600" />
@@ -373,7 +547,6 @@ export default function BookingHub({ currentDestination = 'Tokyo' }) {
                     </div>
                   </div>
 
-                  {/* Pricing & Booking Buttons */}
                   <div className="p-6 pt-0 space-y-3">
                     <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                       <div>

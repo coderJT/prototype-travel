@@ -7,6 +7,7 @@ import ItineraryView from './components/ItineraryView';
 import BudgetSplitter from './components/BudgetSplitter';
 import WorldNewsRadarModal from './components/WorldNewsRadarModal';
 import MediaStudio from './components/MediaStudio';
+import BookingHub from './components/BookingHub';
 import ApiKeyModal from './components/ApiKeyModal';
 import PlanGeneratorModal from './components/PlanGeneratorModal';
 import {
@@ -207,12 +208,19 @@ export default function App() {
               onResolveEmergencyDirectly={() => handleResolveDilemma('opt-c')}
               onOpenPlanGenerator={() => setIsPlanGeneratorOpen(true)}
               onNavigateToMedia={() => setActiveTab('media')}
+              onNavigateToBookings={() => setActiveTab('bookings')}
             />
           )}
 
           {activeTab === 'media' && (
             <MediaStudio
               onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+            />
+          )}
+
+          {activeTab === 'bookings' && (
+            <BookingHub
+              currentDestination={currentDestination}
             />
           )}
 

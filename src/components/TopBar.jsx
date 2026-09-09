@@ -28,6 +28,8 @@ export default function TopBar({
         return 'Personal Sub-AI Concierge';
       case 'media':
         return 'AI Visuals & Video Studio';
+      case 'bookings':
+        return 'Live Flight & Hotel Booking Hub';
       case 'budget':
         return 'Shared Financial Ledger';
       default:

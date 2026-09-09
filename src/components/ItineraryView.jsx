@@ -15,8 +15,11 @@ import {
   Moon,
   CloudRain,
   Image as ImageIcon,
-  Wand2
+  Wand2,
+  ExternalLink,
+  Plane
 } from 'lucide-react';
+import { generateBookingComUrl } from '../services/bookingService';
 
 export default function ItineraryView({
   itinerary,
@@ -25,7 +28,8 @@ export default function ItineraryView({
   emergencySimulated,
   onResolveEmergencyDirectly,
   onOpenPlanGenerator,
-  onNavigateToMedia
+  onNavigateToMedia,
+  onNavigateToBookings
 }) {
   const [activeDay, setActiveDay] = useState(1);
   const [filterCategory, setFilterCategory] = useState('all');
@@ -303,13 +307,27 @@ export default function ItineraryView({
                       <span>Origin: <strong className="text-indigo-700">{item.advocate}</strong></span>
                     </div>
 
-                    <button
-                      onClick={onNavigateToMedia}
-                      className="flex items-center gap-1.5 text-purple-600 hover:text-purple-800 font-bold"
-                    >
-                      <ImageIcon className="w-3.5 h-3.5" />
-                      <span>Visualize with AI</span>
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {item.type === 'stay' && (
+                        <a
+                          href={generateBookingComUrl({ hotelName: item.title, destination: item.location })}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-1.5 text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-xl transition-colors"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>Book on Booking.com</span>
+                        </a>
+                      )}
+
+                      <button
+                        onClick={onNavigateToMedia}
+                        className="flex items-center gap-1.5 text-purple-600 hover:text-purple-800 font-bold"
+                      >
+                        <ImageIcon className="w-3.5 h-3.5" />
+                        <span>Visualize with AI</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

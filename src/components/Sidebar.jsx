@@ -6,6 +6,7 @@ import {
   MessageSquare,
   Image as ImageIcon,
   Wallet,
+  Plane,
   Key,
   Radio,
   Sparkles,
@@ -59,6 +60,14 @@ export default function Sidebar({
       icon: ImageIcon,
       badge: 'Gemini',
       badgeColor: 'bg-pink-100 text-pink-800'
+    },
+    {
+      id: 'bookings',
+      label: 'Live Bookings',
+      description: 'Flights & Hotel Aggregators',
+      icon: Plane,
+      badge: 'Real',
+      badgeColor: 'bg-blue-100 text-blue-800'
     },
     {
       id: 'budget',

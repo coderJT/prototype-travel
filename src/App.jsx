@@ -10,6 +10,7 @@ import BookingHub from './components/BookingHub';
 import ApiKeyModal from './components/ApiKeyModal';
 import PlanGeneratorModal from './components/PlanGeneratorModal';
 import RednoteTravelModal from './components/RednoteTravelModal';
+import InstagramTravelModal from './components/InstagramTravelModal';
 import {
   INITIAL_TRAVELERS,
   INITIAL_ITINERARY,
@@ -35,6 +36,7 @@ export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isPlanGeneratorOpen, setIsPlanGeneratorOpen] = useState(false);
   const [isRednoteModalOpen, setIsRednoteModalOpen] = useState(false);
+  const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -167,6 +169,7 @@ export default function App() {
         onOpenNewsRadar={() => setIsNewsRadarOpen(true)}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         onOpenRednote={() => setIsRednoteModalOpen(true)}
+        onOpenInstagram={() => setIsInstagramModalOpen(true)}
         currentDestination={currentDestination}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(prev => !prev)}
@@ -283,6 +286,13 @@ export default function App() {
       <RednoteTravelModal
         isOpen={isRednoteModalOpen}
         onClose={() => setIsRednoteModalOpen(false)}
+        currentDestination={currentDestination}
+      />
+
+      {/* Instagram Visual Travel Modal */}
+      <InstagramTravelModal
+        isOpen={isInstagramModalOpen}
+        onClose={() => setIsInstagramModalOpen(false)}
         currentDestination={currentDestination}
       />
     </div>

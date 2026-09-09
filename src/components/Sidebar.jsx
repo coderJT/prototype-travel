@@ -26,6 +26,7 @@ export default function Sidebar({
   onOpenNewsRadar,
   onOpenApiKeyModal,
   onOpenRednote,
+  onOpenInstagram,
   currentDestination,
   isOpen,
   onToggle
@@ -196,14 +197,25 @@ export default function Sidebar({
             </button>
           </div>
 
-          {onOpenRednote && (
-            <button
-              onClick={onOpenRednote}
-              className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-bold transition-all cursor-pointer shadow-xs"
-            >
-              <span>📕 RedNote Intel Radar</span>
-            </button>
-          )}
+          <div className="grid grid-cols-2 gap-2">
+            {onOpenRednote && (
+              <button
+                onClick={onOpenRednote}
+                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+              >
+                <span>📕 RedNote</span>
+              </button>
+            )}
+
+            {onOpenInstagram && (
+              <button
+                onClick={onOpenInstagram}
+                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+              >
+                <span>📸 Instagram</span>
+              </button>
+            )}
+          </div>
 
           <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">

@@ -43,9 +43,9 @@ export default function Sidebar({
     {
       id: 'meeting',
       label: 'The Round Table',
-      description: 'Collaborative Squad Debate',
+      description: 'Multi-Agent Deliberation',
       icon: Users,
-      badge: 'Wide Arena',
+      badge: 'Consensus',
       badgeColor: 'bg-emerald-100 text-emerald-800'
     },
     {

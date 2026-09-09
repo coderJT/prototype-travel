@@ -9,6 +9,7 @@ import WorldNewsRadarModal from './components/WorldNewsRadarModal';
 import BookingHub from './components/BookingHub';
 import ApiKeyModal from './components/ApiKeyModal';
 import PlanGeneratorModal from './components/PlanGeneratorModal';
+import RednoteTravelModal from './components/RednoteTravelModal';
 import {
   INITIAL_TRAVELERS,
   INITIAL_ITINERARY,
@@ -33,6 +34,7 @@ export default function App() {
   const [isNewsRadarOpen, setIsNewsRadarOpen] = useState(false);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isPlanGeneratorOpen, setIsPlanGeneratorOpen] = useState(false);
+  const [isRednoteModalOpen, setIsRednoteModalOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -164,6 +166,7 @@ export default function App() {
         newsAlerts={newsAlerts}
         onOpenNewsRadar={() => setIsNewsRadarOpen(true)}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+        onOpenRednote={() => setIsRednoteModalOpen(true)}
         currentDestination={currentDestination}
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(prev => !prev)}
@@ -274,6 +277,13 @@ export default function App() {
         onClose={() => setIsPlanGeneratorOpen(false)}
         travelers={travelers}
         onPlanGenerated={handlePlanGenerated}
+      />
+
+      {/* RedNote Travel Intelligence Modal */}
+      <RednoteTravelModal
+        isOpen={isRednoteModalOpen}
+        onClose={() => setIsRednoteModalOpen(false)}
+        currentDestination={currentDestination}
       />
     </div>
   );

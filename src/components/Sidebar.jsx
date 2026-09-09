@@ -25,6 +25,7 @@ export default function Sidebar({
   newsAlerts,
   onOpenNewsRadar,
   onOpenApiKeyModal,
+  onOpenRednote,
   currentDestination,
   isOpen,
   onToggle
@@ -194,6 +195,15 @@ export default function Sidebar({
               <span>{keyActive ? 'API Active' : 'Set Key'}</span>
             </button>
           </div>
+
+          {onOpenRednote && (
+            <button
+              onClick={onOpenRednote}
+              className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-bold transition-all cursor-pointer shadow-xs"
+            >
+              <span>📕 RedNote Intel Radar</span>
+            </button>
+          )}
 
           <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
             <div className="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">

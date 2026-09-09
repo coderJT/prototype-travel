@@ -26,6 +26,7 @@ import {
 import { generateBookingComUrl, REAL_WORLD_HOTELS, REAL_WORLD_FLIGHTS } from '../services/bookingService';
 import DemandAiBookingModal from './DemandAiBookingModal';
 import HowToUseVisualGuide from './HowToUseVisualGuide';
+import RednoteTravelModal from './RednoteTravelModal';
 import {
   isHotelBooked,
   isFlightBooked,
@@ -52,6 +53,10 @@ export default function ItineraryView({
   const [activeDay, setActiveDay] = useState(1);
   const [filterCategory, setFilterCategory] = useState('all');
   const [showVisualGuide, setShowVisualGuide] = useState(false);
+
+  // RedNote Travel Intelligence state
+  const [isRednoteOpen, setIsRednoteOpen] = useState(false);
+  const [rednoteQuery, setRednoteQuery] = useState('');
 
   // Demand AI state
   const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
@@ -167,6 +172,17 @@ export default function ItineraryView({
             >
               <BookOpen className="w-4 h-4" />
               <span>{showVisualGuide ? 'Hide Guide' : '📖 How It Works'}</span>
+            </button>
+
+            {/* RedNote Intelligence button */}
+            <button
+              onClick={() => {
+                setRednoteQuery('');
+                setIsRednoteOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-2xl shadow-xs transition-all cursor-pointer"
+            >
+              <span>📕 RedNote Intel</span>
             </button>
 
             {/* Plan Generator button */}
@@ -602,6 +618,18 @@ export default function ItineraryView({
                     </div>
 
                     <div className="flex items-center gap-2">
+                      {/* RedNote Travel Tips Trigger */}
+                      <button
+                        onClick={() => {
+                          setRednoteQuery(item.title);
+                          setIsRednoteOpen(true);
+                        }}
+                        className="flex items-center gap-1.5 text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 px-2.5 py-1.5 rounded-xl transition-colors text-xs font-semibold cursor-pointer shadow-2xs"
+                        title="View RedNote trending travel tips & photo spots"
+                      >
+                        <span>📕 RedNote Tips</span>
+                      </button>
+
                       {/* Flight Item Handling */}
                       {item.type === 'flight' && (() => {
                         const existing = isFlightBooked(item.title);
@@ -733,6 +761,14 @@ export default function ItineraryView({
           cancelStoredBooking(id);
           setRefreshKey(k => k + 1);
         }}
+      />
+
+      {/* RedNote Travel Intelligence Modal */}
+      <RednoteTravelModal
+        isOpen={isRednoteOpen}
+        onClose={() => setIsRednoteOpen(false)}
+        currentDestination={currentDestination}
+        initialSearchQuery={rednoteQuery}
       />
     </div>
   );

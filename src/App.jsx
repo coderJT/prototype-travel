@@ -126,11 +126,15 @@ export default function App() {
     showToast('⚠️ Storm Alert Simulated: Day 3 cruise affected. Ready for squad discussion!', 'warning');
   };
 
-  const handlePlanGenerated = (newItinerary, dest) => {
+  const handlePlanGenerated = (newItinerary, dest, options = {}) => {
     setItinerary(newItinerary);
     setCurrentDestination(dest);
     setEmergencySimulated(false);
-    showToast(`✨ Successfully generated custom ${dest} Escape Plan with multi-agent constraints!`);
+    if (options.autoBooked) {
+      showToast(`✨ Generated ${dest} plan & autonomously reserved Flights & Hotel via Demand AI!`);
+    } else {
+      showToast(`✨ Successfully generated custom ${dest} Escape Plan with multi-agent constraints!`);
+    }
     setActiveTab('itinerary');
   };
 

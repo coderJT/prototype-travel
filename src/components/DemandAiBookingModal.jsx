@@ -18,17 +18,23 @@ import {
   Bot,
   Zap,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  Plane,
+  Luggage,
+  Ticket
 } from 'lucide-react';
 import {
   executeDemandAiAutonomousBooking,
+  executeDemandAiAutonomousFlightBooking,
   DEMAND_API_BASE_URL
 } from '../services/bookingDemandAiService';
 
 export default function DemandAiBookingModal({
   isOpen,
   onClose,
-  hotel,
+  hotel = null,
+  flight = null,
+  bookingType = null, // 'hotel' or 'flight'
   travelers = [],
   existingBooking = null,
   onBookingSuccess = () => {},
@@ -40,6 +46,8 @@ export default function DemandAiBookingModal({
   const [confirmedData, setConfirmedData] = useState(null);
   const [showJsonInspector, setShowJsonInspector] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const resolvedType = bookingType || (flight ? 'flight' : existingBooking?.bookingType || 'hotel');
 
   useEffect(() => {
     if (!isOpen) {
@@ -55,13 +63,14 @@ export default function DemandAiBookingModal({
       setConfirmedData(existingBooking);
       setIsProcessing(false);
       setCurrentStep(4);
+    } else if (resolvedType === 'flight' && flight) {
+      startFlightPipeline();
     } else if (hotel) {
-      // Start autonomous pipeline
-      startAutonomousPipeline();
+      startHotelPipeline();
     }
-  }, [isOpen, existingBooking, hotel]);
+  }, [isOpen, existingBooking, hotel, flight, resolvedType]);
 
-  const startAutonomousPipeline = async () => {
+  const startHotelPipeline = async () => {
     setIsProcessing(true);
     setConfirmedData(null);
     setStepLogs([]);
@@ -81,7 +90,32 @@ export default function DemandAiBookingModal({
       setIsProcessing(false);
       onBookingSuccess(result);
     } catch (err) {
-      console.error('Booking failed:', err);
+      console.error('Hotel booking failed:', err);
+      setIsProcessing(false);
+    }
+  };
+
+  const startFlightPipeline = async () => {
+    setIsProcessing(true);
+    setConfirmedData(null);
+    setStepLogs([]);
+    setCurrentStep(1);
+
+    try {
+      const result = await executeDemandAiAutonomousFlightBooking({
+        flight,
+        travelers,
+        onStepChange: (stepData) => {
+          setCurrentStep(stepData.step);
+          setStepLogs(prev => [...prev, stepData]);
+        }
+      });
+
+      setConfirmedData(result);
+      setIsProcessing(false);
+      onBookingSuccess(result);
+    } catch (err) {
+      console.error('Flight booking failed:', err);
       setIsProcessing(false);
     }
   };
@@ -94,23 +128,26 @@ export default function DemandAiBookingModal({
 
   if (!isOpen) return null;
 
+  const isFlight = (confirmedData?.bookingType || resolvedType) === 'flight';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
       <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden my-8 flex flex-col max-h-[90vh]">
         {/* Header Bar */}
-        <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-blue-900 text-white p-6 sm:p-7 flex items-center justify-between shrink-0">
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-blue-950 text-white p-6 sm:p-7 flex items-center justify-between shrink-0">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-indigo-100 text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1">
                 <Zap className="w-3 h-3 text-amber-300 fill-amber-300" />
-                Booking.com Demand API • Sandbox v3.2
+                Booking.com Demand API • {isFlight ? 'Transport & Flights' : 'Accommodations'} Sandbox v3.2
               </span>
               <span className="text-[11px] text-indigo-200 font-semibold hidden sm:inline">
                 Zero Human Interaction Mode
               </span>
             </div>
             <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-              <span>Autonomous Demand AI Booking</span>
+              {isFlight ? <Plane className="w-6 h-6 text-indigo-400" /> : <Building2 className="w-6 h-6 text-indigo-400" />}
+              <span>Autonomous Demand AI {isFlight ? 'Flight Ticketing' : 'Hotel Booking'}</span>
             </h3>
           </div>
 
@@ -134,42 +171,70 @@ export default function DemandAiBookingModal({
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm text-indigo-950">
-                    Aegis Concierge is executing autonomous reservation...
+                    Aegis Concierge is executing autonomous {isFlight ? 'flight reservation' : 'hotel reservation'}...
                   </h4>
                   <p className="text-xs text-indigo-800/80 mt-0.5">
-                    Zero human typing required. Auto-synthesizing Alice, Bob, and Charlie's constraints into Booking.com Demand API.
+                    Zero human typing required. Auto-synthesizing Alice, Bob, and Charlie's passenger manifest into Booking.com Demand API.
                   </p>
                 </div>
               </div>
 
               {/* Step Progress Checklist */}
               <div className="space-y-3 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
-                {[
-                  {
-                    step: 1,
-                    title: 'Querying Demand API Sandbox Inventory',
-                    endpoint: 'POST /accommodations/search',
-                    desc: `Matching ${hotel?.name} with 3-guest room requirements`
-                  },
-                  {
-                    step: 2,
-                    title: 'Rate Lock & Free Cancellation Validation',
-                    endpoint: 'POST /accommodations/availability',
-                    desc: `Securing group rate block & verifying 100% refund policy`
-                  },
-                  {
-                    step: 3,
-                    title: 'Zero-Touch Guest Synthesis',
-                    endpoint: 'POST /orders/preview',
-                    desc: `Binding Alice Lin (Lead), Bob Martinez, Charlie Zhang`
-                  },
-                  {
-                    step: 4,
-                    title: 'Issuing Demand API Instant Voucher',
-                    endpoint: 'POST /orders/confirm',
-                    desc: `Minting PNR, Booking Reference, and QR room key`
-                  }
-                ].map((s) => {
+                {(isFlight
+                  ? [
+                      {
+                        step: 1,
+                        title: 'Querying Demand API Transport Sandbox',
+                        endpoint: 'POST /flights/search',
+                        desc: `Searching flight schedules for ${flight?.origin || 'SIN'} ➔ ${flight?.destination || 'HND'} (3 Passengers)`
+                      },
+                      {
+                        step: 2,
+                        title: 'Group Fare Lock & Seat Inventory Hold',
+                        endpoint: 'POST /flights/offers',
+                        desc: `Holding 3 contiguous Economy seats on ${flight?.airline || 'Japan Airlines'} (${flight?.flightNumber || 'JL 038'})`
+                      },
+                      {
+                        step: 3,
+                        title: 'Zero-Touch Passenger Synthesis',
+                        endpoint: 'POST /orders/preview',
+                        desc: `Binding Alice Lin (Lead / Seat 14A), Bob Martinez (Seat 14B), Charlie Zhang (Seat 14C)`
+                      },
+                      {
+                        step: 4,
+                        title: 'Issuing Demand API E-Tickets & Boarding Passes',
+                        endpoint: 'POST /orders/confirm',
+                        desc: `Minting electronic tickets, airline PNR, and boarding barcodes`
+                      }
+                    ]
+                  : [
+                      {
+                        step: 1,
+                        title: 'Querying Demand API Sandbox Inventory',
+                        endpoint: 'POST /accommodations/search',
+                        desc: `Matching ${hotel?.name || 'Hotel Groove Shinjuku'} with 3-guest room requirements`
+                      },
+                      {
+                        step: 2,
+                        title: 'Rate Lock & Free Cancellation Validation',
+                        endpoint: 'POST /accommodations/availability',
+                        desc: `Securing guaranteed group rate block & verifying 100% refund policy`
+                      },
+                      {
+                        step: 3,
+                        title: 'Zero-Touch Guest Synthesis',
+                        endpoint: 'POST /orders/preview',
+                        desc: `Binding Alice Lin (Lead), Bob Martinez, Charlie Zhang`
+                      },
+                      {
+                        step: 4,
+                        title: 'Issuing Demand API Instant Voucher',
+                        endpoint: 'POST /orders/confirm',
+                        desc: `Minting PNR, Booking Reference, and QR room key`
+                      }
+                    ]
+                ).map((s) => {
                   const isDone = currentStep > s.step;
                   const isCurrent = currentStep === s.step;
                   return (
@@ -223,10 +288,10 @@ export default function DemandAiBookingModal({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-black text-emerald-900 uppercase tracking-wider">
-                        Autonomous Mock Reservation Confirmed!
+                        Autonomous {isFlight ? 'Flight Tickets' : 'Hotel Reservation'} Confirmed!
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 font-extrabold">
-                        Sandbox v3.2
+                        Demand API Sandbox v3.2
                       </span>
                     </div>
                     <p className="text-xs text-emerald-800 mt-0.5 font-medium">
@@ -238,7 +303,7 @@ export default function DemandAiBookingModal({
                 <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-emerald-200 text-xs font-mono font-black text-slate-900 shadow-xs">
                   <span>PNR: {confirmedData.pnr}</span>
                   <button
-                    onClick={() => handleCopyRef(confirmedData.reference)}
+                    onClick={() => handleCopyRef(confirmedData.reference || confirmedData.pnr)}
                     className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
                     title="Copy Reference"
                   >
@@ -247,122 +312,240 @@ export default function DemandAiBookingModal({
                 </div>
               </div>
 
-              {/* Digital Hotel Voucher Card */}
-              <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-                {/* Voucher Top Details */}
-                <div className="p-6 sm:p-7 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={confirmedData.image || hotel?.image}
-                      alt={confirmedData.hotelName}
-                      className="w-20 h-20 rounded-2xl object-cover border border-slate-200 shrink-0"
-                    />
+              {/* ---------------------------------------------------- */}
+              {/* FLIGHT BOARDING PASS / E-TICKET VOUCHER */}
+              {/* ---------------------------------------------------- */}
+              {isFlight ? (
+                <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                  {/* Airline Banner */}
+                  <div className="p-6 sm:p-7 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-gradient-to-r from-slate-50 to-indigo-50/40">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-3xl shadow-xs">
+                        {confirmedData.airlineLogo || '🌸'}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 text-xs text-indigo-700 font-extrabold">
+                          <Plane className="w-3.5 h-3.5" />
+                          <span>{confirmedData.cabinClass || 'Economy Group Block'}</span>
+                        </div>
+                        <h4 className="text-xl font-black text-slate-900 mt-0.5">
+                          {confirmedData.airline} • {confirmedData.flightNumber}
+                        </h4>
+                        <div className="text-xs text-slate-500 font-medium mt-0.5">
+                          Aircraft: Boeing 787-9 Dreamliner • Non-stop ({confirmedData.duration})
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 text-center shrink-0 w-full md:w-auto shadow-xs">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Airline PNR</div>
+                      <div className="text-base font-black text-indigo-700 font-mono mt-0.5">
+                        {confirmedData.pnr}
+                      </div>
+                      <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
+                        Ref: {confirmedData.reference}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Route & Times */}
+                  <div className="p-6 sm:p-7 grid grid-cols-1 sm:grid-cols-3 gap-6 bg-white border-b border-slate-100 items-center">
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{confirmedData.neighborhood}</span>
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Departure</div>
+                      <div className="text-2xl font-black text-slate-900 mt-1">{confirmedData.departTime}</div>
+                      <div className="text-xs font-bold text-slate-700 mt-0.5">{confirmedData.origin}</div>
+                      <div className="text-[11px] text-slate-500">{confirmedData.terminal || 'Terminal 1'}</div>
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center">
+                      <span className="text-xs font-bold text-slate-400 mb-1">{confirmedData.duration}</span>
+                      <div className="w-full flex items-center gap-2">
+                        <div className="h-0.5 flex-1 bg-slate-200"></div>
+                        <Plane className="w-4 h-4 text-indigo-600 rotate-90" />
+                        <div className="h-0.5 flex-1 bg-slate-200"></div>
                       </div>
-                      <h4 className="text-lg font-black text-slate-900 mt-0.5">
-                        {confirmedData.hotelName}
-                      </h4>
-                      <p className="text-xs text-indigo-700 font-bold mt-1">
-                        {confirmedData.roomType}
-                      </p>
+                      <span className="text-[10px] text-emerald-600 font-bold uppercase mt-1">Direct Flight</span>
+                    </div>
+
+                    <div className="sm:text-right">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Arrival</div>
+                      <div className="text-2xl font-black text-slate-900 mt-1">{confirmedData.arriveTime}</div>
+                      <div className="text-xs font-bold text-slate-700 mt-0.5">{confirmedData.destination}</div>
+                      <div className="text-[11px] text-slate-500">{confirmedData.gate || 'Gate D42'}</div>
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 text-center shrink-0 w-full md:w-auto">
-                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Booking Reference</div>
-                    <div className="text-sm font-black text-slate-900 font-mono mt-0.5">
-                      {confirmedData.reference}
+                  {/* Auto-Bound Passenger Manifest with Seats */}
+                  <div className="p-6 sm:p-7 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        Auto-Bound Passengers & Seat Allocations
+                      </h5>
+                      <span className="text-xs font-bold text-emerald-700 flex items-center gap-1">
+                        <Luggage className="w-3.5 h-3.5" />
+                        <span>{confirmedData.baggage}</span>
+                      </span>
                     </div>
-                    <div className="text-[10px] text-emerald-700 font-bold mt-1">
-                      Check-in PIN: {confirmedData.pin}
-                    </div>
-                  </div>
-                </div>
 
-                {/* Dates & Guests Manifest */}
-                <div className="p-6 sm:p-7 grid grid-cols-1 sm:grid-cols-3 gap-6 bg-slate-50/50 border-b border-slate-100">
-                  <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-400" />
-                      <span>Check-In</span>
-                    </div>
-                    <div className="text-sm font-black text-slate-900 mt-1">
-                      {confirmedData.checkIn}
-                    </div>
-                    <div className="text-xs text-slate-500 font-medium mt-0.5">From 15:00 JST</div>
-                  </div>
-
-                  <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-400" />
-                      <span>Check-Out</span>
-                    </div>
-                    <div className="text-sm font-black text-slate-900 mt-1">
-                      {confirmedData.checkOut}
-                    </div>
-                    <div className="text-xs text-slate-500 font-medium mt-0.5">Until 11:00 JST (4 nights)</div>
-                  </div>
-
-                  <div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
-                      <Users className="w-3 h-3 text-slate-400" />
-                      <span>Guests Manifest</span>
-                    </div>
-                    <div className="text-sm font-black text-slate-900 mt-1">
-                      {confirmedData.guestCount} Travelers
-                    </div>
-                    <div className="text-xs text-slate-500 font-medium mt-0.5 truncate">
-                      Lead: {confirmedData.leadGuestName}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Auto-Bound Guest Details */}
-                <div className="p-6 sm:p-7 space-y-3">
-                  <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    Autonomous Guest Binding (Auto-Filled from Squad Profiles)
-                  </h5>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {confirmedData.guests.map((g, i) => (
-                      <div key={i} className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs">
-                        <div className="font-extrabold text-slate-900 flex items-center justify-between">
-                          <span>{g.fullName}</span>
-                          {g.isLead && (
-                            <span className="text-[9px] bg-indigo-100 text-indigo-800 font-bold px-1.5 py-0.5 rounded">
-                              Lead
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {confirmedData.passengers.map((p, i) => (
+                        <div key={i} className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs space-y-1">
+                          <div className="font-black text-slate-900 flex items-center justify-between">
+                            <span>{p.fullName}</span>
+                            <span className="text-[10px] font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">
+                              {p.seat}
                             </span>
-                          )}
+                          </div>
+                          <div className="text-[11px] text-slate-500 font-mono">
+                            E-Tkt: {p.eTicketNumber}
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Meal: {p.mealPreference}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-slate-500 mt-1 truncate">
-                          {g.preferences}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Financial Breakdown */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="text-xs text-slate-500">
-                        {confirmedData.cancellationPolicy}
-                      </div>
-                      <div className="text-xs text-slate-400">
-                        Payment: {confirmedData.paymentMethod}
-                      </div>
+                      ))}
                     </div>
 
-                    <div className="text-left sm:text-right">
-                      <div className="text-xs text-slate-400 font-bold">Total Stay (Split: ${confirmedData.pricePerPerson}/ea)</div>
-                      <div className="text-2xl font-black text-slate-900">
-                        ${confirmedData.totalPrice} <span className="text-xs font-bold text-slate-500">USD</span>
+                    {/* Financial & Check-in instructions */}
+                    <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="space-y-0.5">
+                        <div className="text-xs font-bold text-slate-700">
+                          Boarding: {confirmedData.boardingTime}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          {confirmedData.cancellationPolicy} • {confirmedData.paymentMethod}
+                        </div>
+                      </div>
+
+                      <div className="text-left sm:text-right">
+                        <div className="text-xs text-slate-400 font-bold">Total Fare (Split: ${confirmedData.pricePerPerson}/ea)</div>
+                        <div className="text-2xl font-black text-slate-900">
+                          ${confirmedData.totalPrice} <span className="text-xs font-bold text-slate-500">USD</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                /* ---------------------------------------------------- */
+                /* HOTEL DIGITAL VOUCHER CARD */
+                /* ---------------------------------------------------- */
+                <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                  {/* Voucher Top Details */}
+                  <div className="p-6 sm:p-7 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={confirmedData.image || hotel?.image}
+                        alt={confirmedData.hotelName}
+                        className="w-20 h-20 rounded-2xl object-cover border border-slate-200 shrink-0"
+                      />
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{confirmedData.neighborhood}</span>
+                        </div>
+                        <h4 className="text-lg font-black text-slate-900 mt-0.5">
+                          {confirmedData.hotelName}
+                        </h4>
+                        <p className="text-xs text-indigo-700 font-bold mt-1">
+                          {confirmedData.roomType}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 text-center shrink-0 w-full md:w-auto">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Booking Reference</div>
+                      <div className="text-sm font-black text-slate-900 font-mono mt-0.5">
+                        {confirmedData.reference}
+                      </div>
+                      <div className="text-[10px] text-emerald-700 font-bold mt-1">
+                        Check-in PIN: {confirmedData.pin}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dates & Guests Manifest */}
+                  <div className="p-6 sm:p-7 grid grid-cols-1 sm:grid-cols-3 gap-6 bg-slate-50/50 border-b border-slate-100">
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-slate-400" />
+                        <span>Check-In</span>
+                      </div>
+                      <div className="text-sm font-black text-slate-900 mt-1">
+                        {confirmedData.checkIn}
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium mt-0.5">From 15:00 JST</div>
+                    </div>
+
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-slate-400" />
+                        <span>Check-Out</span>
+                      </div>
+                      <div className="text-sm font-black text-slate-900 mt-1">
+                        {confirmedData.checkOut}
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium mt-0.5">Until 11:00 JST (4 nights)</div>
+                    </div>
+
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1">
+                        <Users className="w-3 h-3 text-slate-400" />
+                        <span>Guests Manifest</span>
+                      </div>
+                      <div className="text-sm font-black text-slate-900 mt-1">
+                        {confirmedData.guestCount} Travelers
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium mt-0.5 truncate">
+                        Lead: {confirmedData.leadGuestName}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Auto-Bound Guest Details */}
+                  <div className="p-6 sm:p-7 space-y-3">
+                    <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Autonomous Guest Binding (Auto-Filled from Squad Profiles)
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {confirmedData.guests?.map((g, i) => (
+                        <div key={i} className="p-3 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs">
+                          <div className="font-extrabold text-slate-900 flex items-center justify-between">
+                            <span>{g.fullName}</span>
+                            {g.isLead && (
+                              <span className="text-[9px] bg-indigo-100 text-indigo-800 font-bold px-1.5 py-0.5 rounded">
+                                Lead
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-500 mt-1 truncate">
+                            {g.preferences}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Financial Breakdown */}
+                    <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="text-xs text-slate-500">
+                          {confirmedData.cancellationPolicy}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          Payment: {confirmedData.paymentMethod}
+                        </div>
+                      </div>
+
+                      <div className="text-left sm:text-right">
+                        <div className="text-xs text-slate-400 font-bold">Total Stay (Split: ${confirmedData.pricePerPerson}/ea)</div>
+                        <div className="text-2xl font-black text-slate-900">
+                          ${confirmedData.totalPrice} <span className="text-xs font-bold text-slate-500">USD</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Developer / Hackathon Judge Mode: Raw Demand API v3.2 JSON */}
               <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-3 shadow-xs">
@@ -372,7 +555,7 @@ export default function DemandAiBookingModal({
                 >
                   <div className="flex items-center gap-2">
                     <Code2 className="w-4 h-4 text-indigo-600" />
-                    <span>Booking.com Demand API v3.2 Sandbox Payload Inspector</span>
+                    <span>Booking.com Demand API v3.2 ({isFlight ? 'Transport' : 'Accommodations'}) Payload Inspector</span>
                   </div>
                   <span className="text-slate-400">{showJsonInspector ? 'Hide JSON ▲' : 'Inspect JSON ▼'}</span>
                 </button>
@@ -393,7 +576,7 @@ export default function DemandAiBookingModal({
                   }}
                   className="px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
                 >
-                  Cancel Mock Reservation (Sandbox Refund)
+                  Cancel Reservation (Sandbox Refund)
                 </button>
 
                 <div className="flex items-center gap-2">
@@ -402,7 +585,7 @@ export default function DemandAiBookingModal({
                     className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors flex items-center gap-1.5"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Print / Save Voucher</span>
+                    <span>Print / Save {isFlight ? 'Boarding Pass' : 'Voucher'}</span>
                   </button>
 
                   <button

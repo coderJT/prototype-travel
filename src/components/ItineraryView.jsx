@@ -18,11 +18,19 @@ import {
   Plane,
   Zap,
   Receipt,
-  CheckCircle2
+  CheckCircle2,
+  Ticket
 } from 'lucide-react';
-import { generateBookingComUrl, REAL_WORLD_HOTELS } from '../services/bookingService';
+import { generateBookingComUrl, REAL_WORLD_HOTELS, REAL_WORLD_FLIGHTS } from '../services/bookingService';
 import DemandAiBookingModal from './DemandAiBookingModal';
-import { isHotelBooked, cancelStoredBooking } from '../services/bookingDemandAiService';
+import {
+  isHotelBooked,
+  isFlightBooked,
+  getTripBookingStatus,
+  executeDemandAiAutonomousBooking,
+  executeDemandAiAutonomousFlightBooking,
+  cancelStoredBooking
+} from '../services/bookingDemandAiService';
 
 export default function ItineraryView({
   itinerary,
@@ -40,8 +48,38 @@ export default function ItineraryView({
   // Demand AI state
   const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+  const [bookingType, setBookingType] = useState('hotel');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const defaultHotel = REAL_WORLD_HOTELS[0];
+  const defaultFlight = REAL_WORLD_FLIGHTS[1] || REAL_WORLD_FLIGHTS[0];
+  const tripStatus = getTripBookingStatus(defaultHotel.name, defaultFlight.flightNumber);
+
+  const handleAutoBookFlight = () => {
+    setSelectedFlight(defaultFlight);
+    setSelectedHotel(null);
+    setBookingType('flight');
+    setSelectedBooking(null);
+    setIsDemandModalOpen(true);
+  };
+
+  const handleAutoBookHotel = () => {
+    setSelectedHotel(defaultHotel);
+    setSelectedFlight(null);
+    setBookingType('hotel');
+    setSelectedBooking(null);
+    setIsDemandModalOpen(true);
+  };
+
+  const handleBookEntireTrip = () => {
+    if (!tripStatus.isFlightBooked) {
+      handleAutoBookFlight();
+    } else if (!tripStatus.isHotelBooked) {
+      handleAutoBookHotel();
+    }
+  };
 
   const currentDayData = itinerary.find(d => d.day === activeDay) || itinerary[0];
 
@@ -135,6 +173,129 @@ export default function ItineraryView({
                 <span>Simulate Typhoon Surge</span>
               </button>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Autonomous Demand AI Full-Trip Booking Hub */}
+      <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border border-indigo-800/60 rounded-3xl p-6 sm:p-7 text-white shadow-md space-y-5">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-indigo-100 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
+                <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                Booking.com Demand API Sandbox v3.2
+              </span>
+              <span className="text-xs text-indigo-200 font-bold">
+                Zero Human Interaction Engine
+              </span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              Autonomous Trip Fulfillment Hub ✈️🏨
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Aegis Concierge can autonomously reserve both flights and accommodations in one click, mapping Alice, Bob, and Charlie's constraints straight to the Demand API.
+            </p>
+          </div>
+
+          <div className="shrink-0 w-full md:w-auto">
+            {!tripStatus.isTripFullyBooked ? (
+              <button
+                onClick={handleBookEntireTrip}
+                className="w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-4 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-black text-xs sm:text-sm rounded-2xl shadow-xl transition-all active:scale-95 cursor-pointer"
+              >
+                <Zap className="w-4 h-4 fill-slate-950" />
+                <span>⚡ 1-Click Auto-Book Full Trip (Flight + Hotel)</span>
+              </button>
+            ) : (
+              <div className="flex items-center justify-center gap-2 bg-emerald-500/20 border border-emerald-400/40 px-5 py-3.5 rounded-2xl text-emerald-300 text-xs font-black shadow-xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Trip 100% Booked via Demand AI Sandbox</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 2 Live Sync Cards: Squad Flight & Hotel */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-white/10">
+          {/* Flight Card */}
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">
+                🌸
+              </div>
+              <div>
+                <div className="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Squad Flight (SIN ➔ HND)</div>
+                <div className="text-sm font-black text-white">Japan Airlines • JL 038</div>
+                <div className="text-xs text-slate-300">11:45 AM - 19:30 PM • 3 Travelers</div>
+              </div>
+            </div>
+
+            <div>
+              {tripStatus.isFlightBooked ? (
+                <button
+                  onClick={() => {
+                    setSelectedBooking(tripStatus.flightBooking);
+                    setSelectedFlight(null);
+                    setSelectedHotel(null);
+                    setBookingType('flight');
+                    setIsDemandModalOpen(true);
+                  }}
+                  className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>PNR: {tripStatus.flightBooking.pnr}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleAutoBookFlight}
+                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                  <span>Auto-Book Flight</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Hotel Card */}
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">
+                🏨
+              </div>
+              <div>
+                <div className="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Squad Stay (Shinjuku)</div>
+                <div className="text-sm font-black text-white">Hotel Groove Shinjuku</div>
+                <div className="text-xs text-slate-300">Kabukicho Tower • 4 Nights</div>
+              </div>
+            </div>
+
+            <div>
+              {tripStatus.isHotelBooked ? (
+                <button
+                  onClick={() => {
+                    setSelectedBooking(tripStatus.hotelBooking);
+                    setSelectedHotel(null);
+                    setSelectedFlight(null);
+                    setBookingType('hotel');
+                    setIsDemandModalOpen(true);
+                  }}
+                  className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Ref: {tripStatus.hotelBooking.pnr}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleAutoBookHotel}
+                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                  <span>Auto-Book Hotel</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -317,6 +478,50 @@ export default function ItineraryView({
                     </div>
 
                     <div className="flex items-center gap-2">
+                      {/* Flight Item Handling */}
+                      {item.type === 'flight' && (() => {
+                        const existing = isFlightBooked(item.title);
+                        const matchedFlight = REAL_WORLD_FLIGHTS.find(f =>
+                          item.title.toLowerCase().includes(f.flightNumber.toLowerCase()) ||
+                          item.title.toLowerCase().includes(f.airline.toLowerCase())
+                        ) || defaultFlight;
+
+                        if (existing) {
+                          return (
+                            <button
+                              onClick={() => {
+                                setSelectedBooking(existing);
+                                setSelectedFlight(null);
+                                setSelectedHotel(null);
+                                setBookingType('flight');
+                                setIsDemandModalOpen(true);
+                              }}
+                              className="flex items-center gap-1.5 text-indigo-800 hover:text-indigo-950 font-bold bg-indigo-100 hover:bg-indigo-200 px-3 py-1.5 rounded-xl transition-colors text-xs cursor-pointer"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5 text-indigo-700" />
+                              <span>E-Ticket Confirmed (PNR: {existing.pnr})</span>
+                            </button>
+                          );
+                        }
+
+                        return (
+                          <button
+                            onClick={() => {
+                              setSelectedFlight(matchedFlight);
+                              setSelectedHotel(null);
+                              setSelectedBooking(null);
+                              setBookingType('flight');
+                              setIsDemandModalOpen(true);
+                            }}
+                            className="flex items-center gap-1.5 text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-bold px-3 py-1.5 rounded-xl transition-all text-xs shadow-xs active:scale-95 cursor-pointer"
+                          >
+                            <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                            <span>⚡ Auto-Book Flight with Demand AI</span>
+                          </button>
+                        );
+                      })()}
+
+                      {/* Stay / Hotel Item Handling */}
                       {item.type === 'stay' && (() => {
                         const existing = isHotelBooked(item.title);
                         const matchedHotel = REAL_WORLD_HOTELS.find(h =>
@@ -340,6 +545,8 @@ export default function ItineraryView({
                               onClick={() => {
                                 setSelectedBooking(existing);
                                 setSelectedHotel(null);
+                                setSelectedFlight(null);
+                                setBookingType('hotel');
                                 setIsDemandModalOpen(true);
                               }}
                               className="flex items-center gap-1.5 text-emerald-800 hover:text-emerald-950 font-bold bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-xl transition-colors text-xs cursor-pointer"
@@ -355,7 +562,9 @@ export default function ItineraryView({
                             <button
                               onClick={() => {
                                 setSelectedHotel(matchedHotel);
+                                setSelectedFlight(null);
                                 setSelectedBooking(null);
+                                setBookingType('hotel');
                                 setIsDemandModalOpen(true);
                               }}
                               className="flex items-center gap-1.5 text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 font-bold px-3 py-1.5 rounded-xl transition-all text-xs shadow-xs active:scale-95 cursor-pointer"
@@ -389,6 +598,8 @@ export default function ItineraryView({
         isOpen={isDemandModalOpen}
         onClose={() => setIsDemandModalOpen(false)}
         hotel={selectedHotel}
+        flight={selectedFlight}
+        bookingType={bookingType}
         existingBooking={selectedBooking}
         travelers={travelers}
         onBookingSuccess={() => setRefreshKey(k => k + 1)}

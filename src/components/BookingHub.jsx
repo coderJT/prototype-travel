@@ -37,7 +37,8 @@ import DemandAiBookingModal from './DemandAiBookingModal';
 import {
   getStoredBookings,
   cancelStoredBooking,
-  isHotelBooked
+  isHotelBooked,
+  isFlightBooked
 } from '../services/bookingDemandAiService';
 
 export default function BookingHub({ currentDestination = 'Tokyo', travelers = [] }) {
@@ -52,6 +53,8 @@ export default function BookingHub({ currentDestination = 'Tokyo', travelers = [
   const [confirmedBookings, setConfirmedBookings] = useState([]);
   const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
   const [selectedHotelForBooking, setSelectedHotelForBooking] = useState(null);
+  const [selectedFlightForBooking, setSelectedFlightForBooking] = useState(null);
+  const [bookingType, setBookingType] = useState('hotel');
   const [selectedBookingForVoucher, setSelectedBookingForVoucher] = useState(null);
 
   useEffect(() => {
@@ -60,13 +63,25 @@ export default function BookingHub({ currentDestination = 'Tokyo', travelers = [
 
   const handleTriggerAutoBook = (hotel) => {
     setSelectedHotelForBooking(hotel);
+    setSelectedFlightForBooking(null);
     setSelectedBookingForVoucher(null);
+    setBookingType('hotel');
+    setIsDemandModalOpen(true);
+  };
+
+  const handleTriggerFlightAutoBook = (flight) => {
+    setSelectedFlightForBooking(flight);
+    setSelectedHotelForBooking(null);
+    setSelectedBookingForVoucher(null);
+    setBookingType('flight');
     setIsDemandModalOpen(true);
   };
 
   const handleViewVoucher = (booking) => {
     setSelectedBookingForVoucher(booking);
     setSelectedHotelForBooking(null);
+    setSelectedFlightForBooking(null);
+    setBookingType(booking.bookingType || 'hotel');
     setIsDemandModalOpen(true);
   };
 
@@ -431,81 +446,122 @@ export default function BookingHub({ currentDestination = 'Tokyo', travelers = [
           </div>
 
           <div className="space-y-4">
-            {REAL_WORLD_FLIGHTS.map((flight) => (
-              <div
-                key={flight.id}
-                className={`bg-white border rounded-3xl p-6 sm:p-7 transition-all shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 ${
-                  flight.recommended
-                    ? 'border-indigo-400 ring-2 ring-indigo-200/60'
-                    : 'border-slate-200'
-                }`}
-              >
-                <div className="flex-1 space-y-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xl">{flight.airlineLogo}</span>
-                    <span className="font-extrabold text-sm text-slate-900">{flight.airline}</span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-bold">
-                      {flight.flightNumber}
-                    </span>
-                    {flight.recommended && (
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
-                        ⭐ SQUAD RECOMMENDED
+            {REAL_WORLD_FLIGHTS.map((flight) => {
+              const existingFlightBooking = isFlightBooked(flight.flightNumber) || isFlightBooked(flight.id);
+              return (
+                <div
+                  key={flight.id}
+                  className={`bg-white border rounded-3xl p-6 sm:p-7 transition-all shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 ${
+                    existingFlightBooking
+                      ? 'border-indigo-500 ring-2 ring-indigo-200'
+                      : flight.recommended
+                      ? 'border-indigo-400 ring-2 ring-indigo-200/60'
+                      : 'border-slate-200'
+                  }`}
+                >
+                  <div className="flex-1 space-y-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="text-xl">{flight.airlineLogo}</span>
+                      <span className="font-extrabold text-sm text-slate-900">{flight.airline}</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-bold">
+                        {flight.flightNumber}
                       </span>
-                    )}
-                    <span className="text-xs text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
-                      Harmony Match: {flight.harmonyScore}%
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-6 text-xs sm:text-sm">
-                    <div>
-                      <div className="font-black text-slate-900 text-base">{flight.departTime}</div>
-                      <div className="text-slate-500 text-xs font-medium mt-0.5">{flight.origin}</div>
+                      {existingFlightBooking ? (
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-extrabold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-indigo-600" />
+                          E-TICKETS ISSUED VIA DEMAND AI
+                        </span>
+                      ) : flight.recommended ? (
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold">
+                          ⭐ SQUAD RECOMMENDED
+                        </span>
+                      ) : null}
+                      <span className="text-xs text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                        Harmony Match: {flight.harmonyScore}%
+                      </span>
                     </div>
 
-                    <div className="flex-1 max-w-[180px] flex flex-col items-center">
-                      <div className="text-[11px] text-slate-400 font-semibold">{flight.duration}</div>
-                      <div className="w-full flex items-center gap-1 my-1">
-                        <div className="h-0.5 flex-1 bg-slate-200"></div>
-                        <Plane className="w-3 h-3 text-indigo-600" />
-                        <div className="h-0.5 flex-1 bg-slate-200"></div>
+                    <div className="flex items-center gap-6 text-xs sm:text-sm">
+                      <div>
+                        <div className="font-black text-slate-900 text-base">{flight.departTime}</div>
+                        <div className="text-slate-500 text-xs font-medium mt-0.5">{flight.origin}</div>
                       </div>
-                      <div className="text-[10px] text-emerald-600 font-bold uppercase">{flight.type}</div>
+
+                      <div className="flex-1 max-w-[180px] flex flex-col items-center">
+                        <div className="text-[11px] text-slate-400 font-semibold">{flight.duration}</div>
+                        <div className="w-full flex items-center gap-1 my-1">
+                          <div className="h-0.5 flex-1 bg-slate-200"></div>
+                          <Plane className="w-3 h-3 text-indigo-600" />
+                          <div className="h-0.5 flex-1 bg-slate-200"></div>
+                        </div>
+                        <div className="text-[10px] text-emerald-600 font-bold uppercase">{flight.type}</div>
+                      </div>
+
+                      <div>
+                        <div className="font-black text-slate-900 text-base">{flight.arriveTime}</div>
+                        <div className="text-slate-500 text-xs font-medium mt-0.5">{flight.destination}</div>
+                      </div>
                     </div>
 
-                    <div>
-                      <div className="font-black text-slate-900 text-base">{flight.arriveTime}</div>
-                      <div className="text-slate-500 text-xs font-medium mt-0.5">{flight.destination}</div>
+                    <div className="flex items-center gap-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                      <Bot className="w-4 h-4 text-indigo-500 shrink-0" />
+                      <span>Reason: <strong className="text-indigo-700">{flight.advocate}</strong></span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
-                    <Bot className="w-4 h-4 text-indigo-500 shrink-0" />
-                    <span>Reason: <strong className="text-indigo-700">{flight.advocate}</strong></span>
+                  <div className="lg:border-l border-slate-200 lg:pl-8 flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-4 shrink-0">
+                    <div className="text-left lg:text-right">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Per Traveler</div>
+                      <div className="text-2xl font-black text-slate-900">${flight.pricePerPerson}</div>
+                      <div className="text-[11px] text-slate-500 font-medium">
+                        ${flight.totalGroupPrice} total (3 guests)
+                      </div>
+                    </div>
+
+                    {existingFlightBooking ? (
+                      <div className="space-y-1.5 w-full lg:w-auto">
+                        <button
+                          onClick={() => {
+                            setSelectedBookingForVoucher(existingFlightBooking);
+                            setSelectedFlightForBooking(null);
+                            setSelectedHotelForBooking(null);
+                            setBookingType('flight');
+                            setIsDemandModalOpen(true);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-black transition-all shadow-xs cursor-pointer"
+                        >
+                          <Ticket className="w-3.5 h-3.5" />
+                          <span>View Boarding Pass ({existingFlightBooking.pnr})</span>
+                        </button>
+                        <div className="text-center text-[10px] text-indigo-700 font-bold">
+                          E-Tickets Issued via Demand AI
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 w-full lg:w-auto">
+                        <button
+                          onClick={() => handleTriggerFlightAutoBook(flight)}
+                          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl text-xs font-black transition-all shadow-md shadow-indigo-100 active:scale-98 cursor-pointer"
+                        >
+                          <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                          <span>⚡ 1-Click Demand AI Auto-Book</span>
+                        </button>
+
+                        <a
+                          href={flight.deepLinkType === 'google-flights' ? googleFlightsLink : skyscannerLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl text-[11px] font-bold transition-all text-center border border-slate-200"
+                        >
+                          <span>Manual {flight.deepLinkType === 'google-flights' ? 'Google Flights' : 'Skyscanner'}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <div className="lg:border-l border-slate-200 lg:pl-8 flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-4 shrink-0">
-                  <div className="text-left lg:text-right">
-                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Per Traveler</div>
-                    <div className="text-2xl font-black text-slate-900">${flight.pricePerPerson}</div>
-                    <div className="text-[11px] text-slate-500 font-medium">
-                      ${flight.totalGroupPrice} total (3 guests)
-                    </div>
-                  </div>
-
-                  <a
-                    href={flight.deepLinkType === 'google-flights' ? googleFlightsLink : skyscannerLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold transition-all shadow-xs"
-                  >
-                    <span>Check on {flight.deepLinkType === 'google-flights' ? 'Google Flights' : 'Skyscanner'}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -752,67 +808,95 @@ export default function BookingHub({ currentDestination = 'Tokyo', travelers = [
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {confirmedBookings
                 .filter(b => b.status === 'CONFIRMED')
-                .map((b) => (
-                  <div
-                    key={b.id}
-                    className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-4"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          CONFIRMED • SANDBOX v3.2
-                        </span>
-                        <span className="font-mono text-xs font-black text-slate-900">
-                          PNR: {b.pnr}
-                        </span>
+                .map((b) => {
+                  const isFlight = b.bookingType === 'flight';
+                  return (
+                    <div
+                      key={b.id}
+                      className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-4"
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1 ${
+                            isFlight ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            {isFlight ? 'E-TICKETS CONFIRMED' : 'HOTEL VOUCHER CONFIRMED'} • SANDBOX v3.2
+                          </span>
+                          <span className="font-mono text-xs font-black text-slate-900">
+                            PNR: {b.pnr}
+                          </span>
+                        </div>
+
+                        {isFlight ? (
+                          <div className="flex items-start gap-4">
+                            <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-3xl shrink-0">
+                              {b.airlineLogo || '🌸'}
+                            </div>
+                            <div>
+                              <h4 className="font-black text-base text-slate-900 leading-tight">
+                                {b.airline} • {b.flightNumber}
+                              </h4>
+                              <div className="text-xs font-bold text-indigo-600 mt-0.5">
+                                {b.origin} ➔ {b.destination} ({b.duration})
+                              </div>
+                              <div className="text-xs text-slate-500 font-medium mt-1">
+                                Departure: {b.departTime} • {b.cabinClass || 'Economy'}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-start gap-4">
+                            <img
+                              src={b.image}
+                              alt={b.hotelName}
+                              className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
+                            />
+                            <div>
+                              <h4 className="font-black text-base text-slate-900 leading-tight">
+                                {b.hotelName}
+                              </h4>
+                              <div className="text-xs text-slate-500 mt-0.5">{b.neighborhood}</div>
+                              <div className="text-xs text-indigo-700 font-bold mt-1">{b.roomType}</div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                          <div>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                              {isFlight ? 'Travel Date' : 'Stay Dates'}
+                            </span>
+                            <div className="font-bold text-slate-800">
+                              {isFlight ? b.departDate : `${b.checkIn} → ${b.checkOut}`}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">Total (3 Guests)</span>
+                            <div className="font-black text-emerald-600">${b.totalPrice} USD</div>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex items-start gap-4">
-                        <img
-                          src={b.image}
-                          alt={b.hotelName}
-                          className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
-                        />
-                        <div>
-                          <h4 className="font-black text-base text-slate-900 leading-tight">
-                            {b.hotelName}
-                          </h4>
-                          <div className="text-xs text-slate-500 mt-0.5">{b.neighborhood}</div>
-                          <div className="text-xs text-indigo-700 font-bold mt-1">{b.roomType}</div>
-                        </div>
-                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <button
+                          onClick={() => handleBookingCancel(b.id)}
+                          className="text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors"
+                        >
+                          Cancel Reservation
+                        </button>
 
-                      <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
-                        <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">Dates</span>
-                          <div className="font-bold text-slate-800">{b.checkIn} → {b.checkOut}</div>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">Total (3 Guests)</span>
-                          <div className="font-black text-emerald-600">${b.totalPrice} USD</div>
-                        </div>
+                        <button
+                          onClick={() => handleViewVoucher(b)}
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                        >
+                          {isFlight ? <Ticket className="w-3.5 h-3.5" /> : <Receipt className="w-3.5 h-3.5" />}
+                          <span>{isFlight ? 'View Boarding Pass' : 'View Voucher'}</span>
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-                      <button
-                        onClick={() => handleBookingCancel(b.id)}
-                        className="text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors"
-                      >
-                        Cancel Reservation
-                      </button>
-
-                      <button
-                        onClick={() => handleViewVoucher(b)}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs"
-                      >
-                        <Receipt className="w-3.5 h-3.5" />
-                        <span>View Voucher</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           )}
         </div>
@@ -823,6 +907,8 @@ export default function BookingHub({ currentDestination = 'Tokyo', travelers = [
         isOpen={isDemandModalOpen}
         onClose={() => setIsDemandModalOpen(false)}
         hotel={selectedHotelForBooking}
+        flight={selectedFlightForBooking}
+        bookingType={bookingType}
         existingBooking={selectedBookingForVoucher}
         travelers={travelers}
         onBookingSuccess={handleBookingSuccess}

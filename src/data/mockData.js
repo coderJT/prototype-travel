@@ -67,8 +67,20 @@ export const INITIAL_ITINERARY = [
     consensusScore: 94,
     items: [
       {
+        id: 'item-1-0',
+        time: '11:45 - 19:30',
+        title: 'Flight JL 038: Japan Airlines (SIN → HND)',
+        type: 'flight',
+        category: 'Transport / Flight',
+        costPerPerson: 460,
+        advocate: 'Bob-Bot (Departs after 11 AM - respects sleep!)',
+        description: 'Non-stop Boeing 787-9 flight with 2x23kg baggage and complimentary meal service.',
+        status: 'confirmed',
+        location: 'Haneda Airport (HND)'
+      },
+      {
         id: 'item-1-1',
-        time: '14:00 - 15:30',
+        time: '20:30 - 21:30',
         title: 'Check-in: Hotel Groove Shinjuku (Kabukicho Tower)',
         type: 'stay',
         category: 'Hotel',

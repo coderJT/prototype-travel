@@ -14,6 +14,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { generatePlanWithAI, hasApiKey } from '../services/geminiService';
+import { executeFullTripAutonomousBooking } from '../services/bookingDemandAiService';
 
 export default function PlanGeneratorModal({
   isOpen,
@@ -26,6 +27,7 @@ export default function PlanGeneratorModal({
   const [theme, setTheme] = useState('Hidden Gems & Foodie');
   const [pace, setPace] = useState('Balanced');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [autoBookDemandAi, setAutoBookDemandAi] = useState(true);
 
   if (!isOpen) return null;
 
@@ -42,7 +44,38 @@ export default function PlanGeneratorModal({
         travelers
       });
 
-      onPlanGenerated(newPlan, destination);
+      if (autoBookDemandAi) {
+        // Execute autonomous Demand AI flight and hotel booking in the background for this destination
+        await executeFullTripAutonomousBooking({
+          hotel: {
+            id: `ht-${destination.toLowerCase()}`,
+            name: `${destination} Grand Central Hotel & Suites`,
+            neighborhood: `${destination} Center`,
+            roomType: 'Deluxe Triple Suite (3 Travelers)',
+            pricePerNightPerPerson: 85,
+            totalPricePerPerson: 340,
+            totalGroupStay: 1020,
+            image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80'
+          },
+          flight: {
+            id: `fl-${destination.toLowerCase()}`,
+            airline: 'All Nippon Airways (ANA)',
+            airlineLogo: '✈️',
+            flightNumber: 'NH 802',
+            origin: 'Singapore (SIN)',
+            destination: destination,
+            departTime: '06:10 AM',
+            arriveTime: '13:55 PM',
+            duration: '6h 45m',
+            baggage: '2 x 23kg included',
+            pricePerPerson: 420,
+            totalGroupPrice: 1260
+          },
+          travelers
+        });
+      }
+
+      onPlanGenerated(newPlan, destination, { autoBooked: autoBookDemandAi });
       setIsGenerating(false);
       onClose();
     } catch (err) {
@@ -163,6 +196,36 @@ export default function PlanGeneratorModal({
               <option value="Mindful Art, Temples & Zen Pacing">Mindful Art, Temples & Zen Pacing</option>
               <option value="Balanced Squad Compromise">Balanced Squad Compromise (All Vibes)</option>
             </select>
+          </div>
+
+          {/* Autonomous Demand AI Full-Trip Booking Toggle */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/90 to-blue-50/90 border border-indigo-200/70 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                  <span>Autonomous Demand AI Full-Trip Booking</span>
+                  <span className="text-[9px] bg-indigo-100 text-indigo-700 font-extrabold px-1.5 py-0.5 rounded">
+                    Sandbox v3.2
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Auto-reserve flights & hotel upon generation with zero human typing
+                </p>
+              </div>
+            </div>
+
+            <label className="relative inline-flex items-center cursor-pointer shrink-0">
+              <input
+                type="checkbox"
+                checked={autoBookDemandAi}
+                onChange={(e) => setAutoBookDemandAi(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
           </div>
 
           {/* Group Constraints Auto-Injected */}

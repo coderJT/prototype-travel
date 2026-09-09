@@ -39,40 +39,31 @@ export default function Sidebar({
       id: 'itinerary',
       label: 'Trip Itinerary',
       description: 'Master Timeline & Visual Guide',
-      icon: Calendar,
-      badge: 'Home',
-      badgeColor: 'bg-indigo-100 text-indigo-800'
+      icon: Calendar
     },
     {
       id: 'meeting',
       label: 'The Round Table',
       description: 'Multi-Agent Deliberation',
-      icon: Users,
-      badge: 'Consensus',
-      badgeColor: 'bg-emerald-100 text-emerald-800'
+      icon: Users
     },
     {
       id: 'personal',
       label: 'Personal Sub-AI',
       description: '1-on-1 Confidential Chat',
-      icon: MessageSquare,
-      badge: 'Private',
-      badgeColor: 'bg-purple-100 text-purple-800'
+      icon: MessageSquare
     },
     {
       id: 'bookings',
       label: 'Live Bookings',
       description: 'Demand AI Autonomous Booking',
-      icon: Plane,
-      badge: 'Sandbox v3.2',
-      badgeColor: 'bg-blue-100 text-blue-800'
+      icon: Plane
     },
     {
       id: 'budget',
       label: 'Group Budget',
       description: 'Fair Expense Ledger',
-      icon: Wallet,
-      badge: null
+      icon: Wallet
     }
   ];
 
@@ -87,7 +78,7 @@ export default function Sidebar({
       />
 
       {/* Sidebar Container */}
-      <aside className="fixed lg:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 min-h-screen select-none shadow-xl lg:shadow-none animate-in slide-in-from-left duration-250">
+      <aside className="fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-72 h-screen overflow-y-auto bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 select-none shadow-xl lg:shadow-none animate-in slide-in-from-left duration-250">
         {/* Top Brand & Header Area */}
         <div className="p-6">
           <div className="flex items-center justify-between">
@@ -162,12 +153,6 @@ export default function Sidebar({
                       </div>
                     </div>
                   </div>
-
-                  {item.badge && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${item.badgeColor}`}>
-                      {item.badge}
-                    </span>
-                  )}
                 </button>
               );
             })}

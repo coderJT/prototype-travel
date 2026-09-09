@@ -26,8 +26,6 @@ export default function TopBar({
         return 'Master Trip Timeline';
       case 'personal':
         return 'Personal Sub-AI Concierge';
-      case 'media':
-        return 'AI Visuals & Video Studio';
       case 'bookings':
         return 'Live Flight & Hotel Booking Hub';
       case 'budget':

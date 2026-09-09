@@ -4,7 +4,6 @@ import {
   Users,
   Calendar,
   MessageSquare,
-  Image as ImageIcon,
   Wallet,
   Plane,
   Key,
@@ -52,14 +51,6 @@ export default function Sidebar({
       icon: MessageSquare,
       badge: 'Private',
       badgeColor: 'bg-purple-100 text-purple-800'
-    },
-    {
-      id: 'media',
-      label: 'AI Visuals & Video',
-      description: 'Imagen 3 & Veo Studio',
-      icon: ImageIcon,
-      badge: 'Gemini',
-      badgeColor: 'bg-pink-100 text-pink-800'
     },
     {
       id: 'bookings',

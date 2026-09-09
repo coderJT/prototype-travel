@@ -14,7 +14,6 @@ import {
   Utensils,
   Moon,
   CloudRain,
-  Image as ImageIcon,
   Wand2,
   ExternalLink,
   Plane
@@ -28,7 +27,6 @@ export default function ItineraryView({
   emergencySimulated,
   onResolveEmergencyDirectly,
   onOpenPlanGenerator,
-  onNavigateToMedia,
   onNavigateToBookings
 }) {
   const [activeDay, setActiveDay] = useState(1);
@@ -319,14 +317,6 @@ export default function ItineraryView({
                           <span>Book on Booking.com</span>
                         </a>
                       )}
-
-                      <button
-                        onClick={onNavigateToMedia}
-                        className="flex items-center gap-1.5 text-purple-600 hover:text-purple-800 font-bold"
-                      >
-                        <ImageIcon className="w-3.5 h-3.5" />
-                        <span>Visualize with AI</span>
-                      </button>
                     </div>
                   </div>
                 </div>

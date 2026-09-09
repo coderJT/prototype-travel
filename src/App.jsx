@@ -6,7 +6,6 @@ import PersonalizationStudio from './components/PersonalizationStudio';
 import ItineraryView from './components/ItineraryView';
 import BudgetSplitter from './components/BudgetSplitter';
 import WorldNewsRadarModal from './components/WorldNewsRadarModal';
-import MediaStudio from './components/MediaStudio';
 import BookingHub from './components/BookingHub';
 import ApiKeyModal from './components/ApiKeyModal';
 import PlanGeneratorModal from './components/PlanGeneratorModal';
@@ -207,14 +206,7 @@ export default function App() {
               emergencySimulated={emergencySimulated}
               onResolveEmergencyDirectly={() => handleResolveDilemma('opt-c')}
               onOpenPlanGenerator={() => setIsPlanGeneratorOpen(true)}
-              onNavigateToMedia={() => setActiveTab('media')}
               onNavigateToBookings={() => setActiveTab('bookings')}
-            />
-          )}
-
-          {activeTab === 'media' && (
-            <MediaStudio
-              onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
             />
           )}
 

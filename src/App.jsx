@@ -206,6 +206,7 @@ export default function App() {
           {activeTab === 'itinerary' && (
             <ItineraryView
               itinerary={itinerary}
+              travelers={travelers}
               onSimulateEmergency={handleSimulateEmergency}
               onNavigateToMeeting={() => setActiveTab('meeting')}
               emergencySimulated={emergencySimulated}
@@ -218,6 +219,7 @@ export default function App() {
           {activeTab === 'bookings' && (
             <BookingHub
               currentDestination={currentDestination}
+              travelers={travelers}
             />
           )}
 

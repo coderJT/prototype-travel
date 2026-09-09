@@ -15,13 +15,18 @@ import {
   Moon,
   CloudRain,
   Wand2,
-  ExternalLink,
-  Plane
+  Plane,
+  Zap,
+  Receipt,
+  CheckCircle2
 } from 'lucide-react';
-import { generateBookingComUrl } from '../services/bookingService';
+import { generateBookingComUrl, REAL_WORLD_HOTELS } from '../services/bookingService';
+import DemandAiBookingModal from './DemandAiBookingModal';
+import { isHotelBooked, cancelStoredBooking } from '../services/bookingDemandAiService';
 
 export default function ItineraryView({
   itinerary,
+  travelers = [],
   onSimulateEmergency,
   onNavigateToMeeting,
   emergencySimulated,
@@ -31,6 +36,12 @@ export default function ItineraryView({
 }) {
   const [activeDay, setActiveDay] = useState(1);
   const [filterCategory, setFilterCategory] = useState('all');
+
+  // Demand AI state
+  const [isDemandModalOpen, setIsDemandModalOpen] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const currentDayData = itinerary.find(d => d.day === activeDay) || itinerary[0];
 
@@ -305,18 +316,65 @@ export default function ItineraryView({
                       <span>Origin: <strong className="text-indigo-700">{item.advocate}</strong></span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      {item.type === 'stay' && (
-                        <a
-                          href={generateBookingComUrl({ hotelName: item.title, destination: item.location })}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center gap-1.5 text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-xl transition-colors"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          <span>Book on Booking.com</span>
-                        </a>
-                      )}
+                    <div className="flex items-center gap-2">
+                      {item.type === 'stay' && (() => {
+                        const existing = isHotelBooked(item.title);
+                        const matchedHotel = REAL_WORLD_HOTELS.find(h =>
+                          item.title.toLowerCase().includes(h.name.toLowerCase()) ||
+                          h.name.toLowerCase().includes(item.title.toLowerCase())
+                        ) || {
+                          id: 'ht-itinerary',
+                          name: item.title,
+                          neighborhood: item.location,
+                          roomType: 'Deluxe Triple Suite (3 Travelers)',
+                          pricePerNightPerPerson: item.costPerPerson || 85,
+                          totalPricePerPerson: (item.costPerPerson || 85) * 4,
+                          totalGroupStay: (item.costPerPerson || 85) * 4 * 3,
+                          image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
+                          advocate: item.advocate
+                        };
+
+                        if (existing) {
+                          return (
+                            <button
+                              onClick={() => {
+                                setSelectedBooking(existing);
+                                setSelectedHotel(null);
+                                setIsDemandModalOpen(true);
+                              }}
+                              className="flex items-center gap-1.5 text-emerald-800 hover:text-emerald-950 font-bold bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-xl transition-colors text-xs cursor-pointer"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                              <span>Demand AI Booked ({existing.pnr})</span>
+                            </button>
+                          );
+                        }
+
+                        return (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setSelectedHotel(matchedHotel);
+                                setSelectedBooking(null);
+                                setIsDemandModalOpen(true);
+                              }}
+                              className="flex items-center gap-1.5 text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 font-bold px-3 py-1.5 rounded-xl transition-all text-xs shadow-xs active:scale-95 cursor-pointer"
+                            >
+                              <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                              <span>⚡ Auto-Book with Demand AI</span>
+                            </button>
+
+                            <a
+                              href={generateBookingComUrl({ hotelName: item.title, destination: item.location })}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-1 text-slate-500 hover:text-slate-800 font-semibold text-xs px-2 py-1"
+                            >
+                              <span>Manual</span>
+                            </a>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -325,6 +383,20 @@ export default function ItineraryView({
           );
         })}
       </div>
+
+      {/* Demand AI Booking & Voucher Modal */}
+      <DemandAiBookingModal
+        isOpen={isDemandModalOpen}
+        onClose={() => setIsDemandModalOpen(false)}
+        hotel={selectedHotel}
+        existingBooking={selectedBooking}
+        travelers={travelers}
+        onBookingSuccess={() => setRefreshKey(k => k + 1)}
+        onBookingCancel={(id) => {
+          cancelStoredBooking(id);
+          setRefreshKey(k => k + 1);
+        }}
+      />
     </div>
   );
 }

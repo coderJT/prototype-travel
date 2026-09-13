@@ -4,7 +4,7 @@ const STORAGE_KEY = 'escapeplan_gemini_api_key';
 const STORAGE_MODEL = 'escapeplan_gemini_model';
 
 const DEFAULT_KEY = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_GEMINI_API_KEY) || '';
-const DEFAULT_MODEL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_MODEL) || (typeof process !== 'undefined' && process.env?.VITE_GEMINI_MODEL) || 'gemini-1.5-flash';
+const DEFAULT_MODEL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_MODEL) || (typeof process !== 'undefined' && process.env?.VITE_GEMINI_MODEL) || 'gemini-3.5-flash';
 
 let cachedWorkingModel = null;
 

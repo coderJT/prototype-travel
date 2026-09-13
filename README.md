@@ -33,6 +33,7 @@ Group travel is universally celebrated as a pinnacle social experience, yet the 
 • Fearing being seen as cheap    • Endless unanswered WhatsApp polls  • 10:30 AM night owls            • Endless indecision
 • Masking physical fatigue       • Unappreciated responsibility       • Irritation & delays            • Trip ruined on day 3
 ```
+*Figure 1.1: Root-Cause Sociological Breakdown of Group Travel Planning Failures.*
 
 #### Root Causes & Sociological Dynamics
 1. **Polite Silence & Financial Stigma:** In group messaging threads, travelers systematically conceal their authentic financial boundaries out of fear of being perceived as "cheap", "difficult", or dampening the group's excitement. A student or budget traveler secretly anxious about a $180 omakase dinner will simply agree out of peer pressure, harboring quiet resentment throughout the trip.
@@ -67,12 +68,12 @@ Group travel is universally celebrated as a pinnacle social experience, yet the 
 ---
 
 ### 1.4 Our Solution
-**EscapePlan AI** is a multi-agent group travel orchestration ecosystem that replaces stressful group chat deliberations with private, autonomous AI diplomacy and zero-touch booking fulfillment. Each traveler is paired with a private, confidential **Sub-AI agent** (1-on-1 Personal Concierge Studio) where they can express their unvarnished preferences, budget ceilings, and pacing limits without social judgment. A lead orchestrator agent (**Aegis**) then convenes a **Virtual Squad Conciliation Table** powered by a **LangGraph Multi-Agent StateGraph Engine**, where the Sub-AIs debate trade-offs, execute transparent reasoning traces, and resolve dilemmas into an optimized, consensus-scored itinerary.
+**EscapePlan AI** is a multi-agent group travel orchestration ecosystem that replaces stressful group chat deliberations with private, autonomous AI diplomacy and zero-touch booking fulfillment. Each traveler is paired with a private, confidential **Sub-AI agent** (1-on-1 Personal Concierge Studio) where they can express their unvarnished preferences, budget ceilings, and pacing limits without social judgment. A lead orchestrator agent (**Aegis**) then convenes a **Virtual Squad Conciliation Table** powered by a **LangGraph Multi-Agent StateGraph Engine** and **Google Gemini 3.5 Flash / Pro API**, where the Sub-AIs debate trade-offs, execute transparent reasoning traces, and resolve dilemmas into an optimized, consensus-scored itinerary.
 
 #### Comprehensive Feature-Set
-1. **Confidential 1-on-1 Personalization Studio:** Private safe-space chat with your assigned Sub-AI concierge (powered by Gemini Live API) to configure uncensored daily budget caps, wake-up locks, step thresholds, and hidden wishlists.
+1. **Confidential 1-on-1 Personalization Studio:** Private safe-space chat with your assigned Sub-AI concierge (powered by Gemini 3.5 Live API) to configure uncensored daily budget caps, wake-up locks, step thresholds, and hidden wishlists.
 2. **Squad Travel Conciliation Table & LangGraph Multi-Agent Engine:** Virtual negotiation table where traveler Sub-AIs advocate for their humans, stream transparent chain-of-thought deliberation traces, and vote on dilemma alternatives with dynamic quorum rules (3/3 Unanimous / Majority).
-3. **Master Timeline Orchestrator (Powered by Gemini 1.5 Flash API):** Generates constraint-aware multi-day itineraries with clear category badges, advocate attribution, and per-person cost breakdowns.
+3. **Master Timeline Orchestrator (Powered by Gemini 3.5 Flash API):** Generates constraint-aware multi-day itineraries with clear category badges, advocate attribution, and per-person cost breakdowns.
 4. **Demand AI Autonomous Booking Engine (Booking.com Demand API Sandbox v3.2):** 1-click zero-touch reservation engine that auto-binds traveler manifest data to generate verified PNR flight tickets and hotel vouchers without manual form filling.
 5. **World News & Disruption Radar:** Proactive live monitoring of meteorological satellites, transport advisories, and local alerts to automatically simulate and resolve real-time disruptions (e.g., typhoon contingencies).
 6. **Dual Social Proof Intelligence (Xiaohongshu / RedNote + Instagram Reels):** Verified creator tips, anti-trap guides (*“避坑指南”*), and photography angles integrated directly into every itinerary stop.
@@ -84,72 +85,88 @@ Group travel is universally celebrated as a pinnacle social experience, yet the 
 
 ## 2. Ideation & Process
 
-### 2.1 Ideas We Considered & Evolution Matrix
+### 2.1 Chronological Evolution of Our Ideas (From Scratch to Current Solution)
+
+Our product did not emerge in its current form overnight. It underwent **5 distinct generational pivots**, evolving from primitive map-sharing concepts into an autonomous multi-agent game-theoretic conciliation engine.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   IDEATION EVOLUTION & EXPLORATION MATRIX                              │
-├──────────────────────────────────────┬────────────┬────────────────────────────────────────────────────┤
-│ Idea Exploration & Market Benchmarks │ Decision   │ In-Depth Rationale & Strategic Trade-off           │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 1. Multi-Agent Sub-AI Negotiation    │ ✅ KEPT    │ • Core Breakthrough: Decouples the human ego from  │
-│    with LangGraph StateGraph Table   │ (Chosen)   │   the negotiation table. Eliminates interpersonal  │
-│                                      │            │   embarrassment while achieving math consensus.   │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 2. Confidential 1-on-1 Concierge     │ ✅ KEPT    │ • Captures authentic, unfiltered constraints       │
-│    Personalization Studio            │ (Chosen)   │   (budgets, knee injuries, sleep needs) that users │
-│                                      │            │   would never share in a group WhatsApp chat.      │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 3. Autonomous Demand AI Booking Hub  │ ✅ KEPT    │ • Bridges planning to execution. Solves the #1     │
-│    (Demand API Sandbox v3.2)         │ (Chosen)   │   operational pain point: filling 10+ booking forms│
-│                                      │            │   with passport, room, and seat configurations.   │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 4. Proactive World News & Disruption │ ✅ KEPT    │ • Prevents trip collapse. Itineraries become       │
-│    Radar with Live Contingency Logic │ (Chosen)   │   living organisms adapting to real-time weather.  │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 5. Dual Social Proof Engine          │ ✅ KEPT    │ • Combines Western visual aesthetics (Instagram)   │
-│    (Xiaohongshu + Instagram Reels)   │ (Chosen)   │   with hyper-local Asian crowd-avoidance tips.     │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 6. Wise Real-Time Mid-Market FX Hub  │ ✅ KEPT    │ • Prevents 3-5% hidden bank FX markups and provides│
-│                                      │ (Chosen)   │   transparent multi-currency expense settlement.   │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 7. Google Maps Style Collaborative   │ ❌ DROPPED │ • Flaw: Merely dropping 50 pins on a map creates   │
-│    Pin Dropping Board (Competitor)   │            │   visual clutter with zero time sequencing, transit│
-│                                      │            │   routing, opening hours, or budget balancing.     │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 8. TripIt Style Email Confirmation   │ ❌ DROPPED │ • Flaw: Purely retroactive documentation parser.   │
-│    Forwarding & Parser (Competitor)  │            │   Does not help groups decide *where* or *how* to  │
-│                                      │            │   plan before bookings are already finalized.      │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 9. TripAdvisor Style Forum & Static  │ ❌ DROPPED │ • Flaw: Cluttered with outdated tourist traps,     │
-│    Crowd Review Hub (Competitor)     │            │   commercial ads, and zero personalized group      │
-│                                      │            │   constraint filtering.                            │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 10. Splitwise Style Post-Trip Expense│ ❌ DROPPED │ • Flaw: Only splits bills *after* money is spent;  │
-│     Logging (Competitor Standard)    │ (Enhanced) │   does nothing to prevent overspending *before*    │
-│                                      │            │   commitments. Replaced with pre-booking caps.     │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 11. Tinder-Style Binary Place Swiping│ ❌ DROPPED │ • Flaw: Binary Yes/No swiping fails to capture     │
-│     Voting Bot                       │            │   conditional trade-offs (e.g. "Yes to museum ONLY │
-│                                      │            │   if we have cheap dinner and sit for 1 hour").    │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 12. Monolithic Single AI Chatbot     │ ❌ DROPPED │ • Flaw: In a shared group chat, extroverts still   │
-│     (ChatGPT / Roam Around Style)    │            │   dominate prompts, recreating social pressure.    │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 13. Hard Split-Itinerary Mode        │ ❌ DROPPED │ • Flaw: Splitting members all day destroyed the    │
-│     (Full Day Independent Wandering) │            │   spirit of traveling together. Adopted shared core│
-│                                      │            │   days with optional modular night tracks instead. │
-├──────────────────────────────────────┼────────────┼────────────────────────────────────────────────────┤
-│ 14. Web3 Crypto Escrow Wallet        │ ❌ DROPPED │ • Flaw: Massive user friction, volatile gas fees,  │
-│     for Shared Travel Funds          │            │   and zero mainstream adoption among travelers.    │
-└──────────────────────────────────────┴────────────┴────────────────────────────────────────────────────┘
+│                              THE 5-STAGE CHRONOLOGICAL EVOLUTION PIPELINE                              │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 0: Collaborative Map Scratchpad (Aug 2026)                                                      │
+│  • Concept: Shared Google Maps style pinboard where members drop location pins with comment notes.     │
+│  • Bottleneck: 50 unorganized pins caused visual chaos; zero schedule timing, transit, or budget logic.│
+│  • Decision: ❌ Dropped (Too passive, does not solve group negotiation).                              │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 1: Tinder-Style Binary Place Swiping Bot (Late Aug 2026)                                        │
+│  • Concept: An anonymous swipe-matching mini-app (Swipe Right = Want to go, Swipe Left = Skip).       │
+│  • Bottleneck: Binary Yes/No votes broke down because human preferences are conditional (e.g. "Yes to  │
+│    museum ONLY if we don't walk 15,000 steps and eat cheap noodles after"). Multi-variable failure.   │
+│  • Decision: ❌ Dropped (Fails to capture complex conditional trade-offs).                             │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 2: Single Monolithic Group AI Chatbot (Early Sep 2026)                                          │
+│  • Concept: A single shared group bot (like ChatGPT / Roam Around) added into a shared group chat.     │
+│  • Bottleneck: Sociological failure ("Polite Silence"). Extroverts dominated chat prompts while quiet  │
+│    or budget-conscious friends stayed silent. AI generated generic top-10 lists without constraints.  │
+│  • Decision: ❌ Dropped (Recreates the exact same group peer pressure we aimed to eliminate).           │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 3: Complete Hard-Split Solo Day Tracks (Early Sep 2026)                                         │
+│  • Concept: Let every traveler do completely separate independent day trips based on their desires.   │
+│  • Bottleneck: User testing showed total daytime separation destroyed the social bonding and shared   │
+│    memories of traveling together.                                                                     │
+│  • Decision: 🔄 Pivoted into Shared Core Day Itineraries with Optional Modular Evening Tracks.         │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 4: Multi-Agent Sub-AI Delegation with Poker Game Room (Mid Sep 2026)                            │
+│  • Concept: Give each traveler a private Sub-AI to negotiate at a virtual poker-styled round table.    │
+│  • Mentor Critiques (9 Sep - Kueh Pang Teng & 13 Sep - Stefan): Lack of real API/tool integrations     │
+│    and overly chaotic/messy "poker" UI lacking a fixed design hierarchy or operational backend.       │
+│  • Decision: 🔄 Overhauled into formalized LangGraph StateGraph Architecture & Unified Design System.  │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  STAGE 5: CURRENT SOLUTION — LangGraph StateGraph Engine + Demand AI Autonomous Booking (Final)        │
+│  • Breakthrough: Directed cyclic StateGraph with typed channels, transparent reasoning traces, 1-on-1  │
+│    confidential studio, Booking.com Demand API Sandbox v3.2 autonomous fulfillment, Wise FX engine,   │
+│    and World News & Weather Disruption Radar powered by Gemini 3.5 Flash / Pro.                        │
+│  • Decision: ✅ KEPT & FULLY IMPLEMENTED (Chosen Final System).                                        │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+#### Detailed Evolution & Decision Matrix (Chosen Ideas Listed First)
+
+| Stage / Idea Exploration | Status | What We Built & Tested | Why It Failed, Pivoted, or Was Kept |
+| :--- | :---: | :--- | :--- |
+| **A. LangGraph Multi-Agent StateGraph Engine & Squad Conciliation Table (STAGE 5)** | **✅ Kept (Chosen)** | Built a directed cyclic StateGraph (`src/services/langgraphEngine.js`) where private Sub-AIs stream transparent thinking traces, execute quorum voting, and balance constraints via Gemini 3.5. | **The Ultimate Breakthrough:** Mathematically reconciles conflicting budgets, sleep schedules, and step limits while shielding user egos. Delivers unanimous consensus. |
+| **B. Confidential 1-on-1 Studio & Private Persona Extraction (STAGE 5)** | **✅ Kept (Chosen)** | Private conversational space where travelers disclose true financial ceilings, physical fatigue caps, and hidden cravings directly to their Sub-AI. | **The Psychological Buffer:** Solves the root cause of "Polite Silence". Users openly share constraints they would never type in a shared group WhatsApp chat. |
+| **C. Demand AI Autonomous Booking Engine (Demand API Sandbox v3.2) (STAGE 5)** | **✅ Kept (Chosen)** | Programmatic fulfillment engine that auto-binds manifest records to issue confirmed airline PNRs and hotel reservation vouchers without manual typing. | **Fulfillment Automation:** Bridges planning to execution. Eliminates the #1 organizer pain point: manually entering passport and payment details across 10 sites. |
+| **D. Proactive World News & Disruption Radar with Live Contingency Logic (STAGE 5)** | **✅ Kept (Chosen)** | Satellite meteorological and transit advisory ingestion that dynamically flags threatened activities and triggers instant indoor contingency re-planning. | **Trip Resilience:** Converts rigid static itineraries into living, self-healing schedules that adapt to real-world weather crises before groups step out. |
+| **E. Dual Social Proof Intelligence (Xiaohongshu + Instagram Reels) (STAGE 5)** | **✅ Kept (Chosen)** | Direct integration of verified Xiaohongshu creator anti-trap advice (*“避坑指南”*) and Instagram aesthetic photography composition guides. | **Cross-Cultural Wisdom:** Combines Western aesthetic discovery with granular, authentic Asian crowd-avoidance and scam prevention tips. |
+| **F. Wise Real-Time Mid-Market Currency & Budget Balancer (STAGE 5)** | **✅ Kept (Chosen)** | Integrated Wise (TransferWise) Rates API to provide transparent mid-market FX benchmarks and automated fair per-person budget tracking. | **Financial Transparency:** Eliminates 3.5%–5.0% hidden retail bank spreads and prevents awkward retroactive bill-splitting arguments. |
+| *G. Multi-Agent Sub-AI with Poker Game Room (STAGE 4)* | **🔄 Pivoted** | Created a gamified "poker chip" table where agents made bets on activities. | **Pivoted after Stefan's Feedback (13 Sep):** The poker metaphor felt too messy and gimmick-heavy. Refactored into the professional **Squad Travel Conciliation Arena** with transparent thinking traces. |
+| *H. Complete Hard-Split Independent Day Tracks (STAGE 3)* | **🔄 Pivoted** | Automated full-day separation where each friend wandered independently all day. | **Pivoted after User Testing:** Users felt isolated and missed the core purpose of a vacation (shared memories). Pivoted to shared core daytime activities with optional modular night-owl tracks. |
+| *I. Monolithic Single AI Group Chatbot (STAGE 2 - ChatGPT / Roam Around Style)* | **❌ Dropped** | Added a single conversational AI bot into a shared group chat room. | **Dropped:** Recreated the exact same social pressure! Extroverts dominated the prompt inputs, while introverts were too embarrassed to state budget constraints in public. |
+| *J. Tinder-Style Binary Place Swiping App (STAGE 1)* | **❌ Dropped** | Built a swipe-matching card deck where groups swiped Right/Left on attractions. | **Dropped:** Total failure on conditional logic. Users liked a spot *only if* it was cheap or indoors. Binary swiping cannot express nuanced constraints. |
+| *K. Shared Google Maps / Collaborative Pin Scratchpad (STAGE 0)* | **❌ Dropped** | Implemented a collaborative map canvas with pinned locations and shared comment boxes. | **Dropped:** Information overload. 50 pins on a map provided zero guidance on time sequencing, opening hours, transit routing, or group budget balancing. |
+| *L. TripIt Style Email Confirmation Forwarding Parser (Competitor Benchmark)* | **❌ Dropped** | Evaluated building an inbox parser for airline and hotel confirmation PDFs. | **Dropped:** Purely retroactive. Does nothing to help groups decide *what* to do or resolve disagreements *before* money is already committed. |
+| *M. TripAdvisor Style Static Review Aggregator (Competitor Benchmark)* | **❌ Dropped** | Explored pulling TripAdvisor / Yelp star ratings into a directory list. | **Dropped:** Dominated by commercial ads, outdated tourist traps, and zero contextual filtering for personal dietary/step constraints. |
+| *N. Web3 Shared Crypto Travel Wallet (Exploratory)* | **❌ Dropped** | Explored a smart contract escrow wallet where friends pool crypto for trip expenses. | **Dropped:** Massive onboarding friction, volatile gas fees, and zero mainstream traveler adoption. Replaced with Wise fiat mid-market rails. |
 
 ---
 
-### 2.2 Ideation Boards, System Architecture & User Flows
+### 2.2 Explicit Multi-Layered Ideation & System Architecture Diagrams
 
-#### A. Multi-Layered Ideation Mindmap
+#### Diagram 1: The Ideation Evolution Timeline (`Mermaid` Timeline)
+```mermaid
+timeline
+    title EscapePlan AI: Chronological Ideation & Pivot Journey
+    section Stage 0 (Aug 2026) : Collaborative Map Board : Dropped due to visual clutter & zero scheduling
+    section Stage 1 (Late Aug) : Tinder-Style Swipe Bot : Dropped due to failure on conditional multi-variable trade-offs
+    section Stage 2 (Early Sep) : Shared Group LLM Bot : Dropped due to Polite Silence & extrovert bias
+    section Stage 3 (Early Sep) : Hard Split Solo Days : Pivoted to Shared Core Days + Modular Night Tracks
+    section Stage 4 (Mid Sep) : Poker Game Table : Mentor Feedback (Kueh Pang Teng & Stefan) triggered overhaul
+    section Stage 5 (Final MVP) : LangGraph StateGraph Engine : Implemented Directed Graph + Demand AI Booking + Wise FX (Gemini 3.5)
+```
+*Figure 2.1: Chronological timeline illustrating the iterative evolutionary milestones and pivotal architectural breakthroughs.*
+
+#### Diagram 2: Comprehensive Ideation & Feature Taxonomy Mindmap (ASCII)
 ```
                                         ┌─── [Justin: Lead Explorer ($160/d, 10k steps, Ramen)]
                    ┌── Private Sub-AIs ─┼─── [Alice: Budget Foodie ($150/d, 12k steps, Pescatarian)]
@@ -158,7 +175,7 @@ Group travel is universally celebrated as a pinnacle social experience, yet the 
                    │
                    ├── Negotiation ─────┬─── [LangGraph Multi-Agent StateGraph Architecture]
                    │   Mechanism        ├─── [Typed State Channels & Transparent Thinking Traces]
-                   │                    └─── [Consensus Quorum: 3/3 Unanimous & Majority Scoring]
+                   │   (Gemini 3.5)     └─── [Consensus Quorum: 3/3 Unanimous & Majority Scoring]
                    │
 ESCAPEPLAN AI ─────┼── Execution ───────┬─── [Autonomous Demand AI Booking Engine (Flights + Hotels)]
 IDEATION ECOSYSTEM │   & Fulfillment    ├─── [Wise Mid-Market Currency & Expense Balancer]
@@ -168,12 +185,12 @@ IDEATION ECOSYSTEM │   & Fulfillment    ├─── [Wise Mid-Market Currency
                        & Intelligence   ├─── [Live Indoor Plan-B Contingency Re-planning]
                                         └─── [Dual Social Proof: Xiaohongshu Anti-Trap + IG Reels]
 ```
-*Figure 2.1: Multi-Branch Ideation Mindmap illustrating how private psychological needs map to autonomous execution layers.*
+*Figure 2.2: Multi-Branch Ideation Mindmap illustrating how private psychological needs map to autonomous execution layers.*
 
-#### B. LangGraph Multi-Agent StateGraph Architecture
+#### Diagram 3: LangGraph Multi-Agent StateGraph Architecture (`Mermaid` Graph)
 ```mermaid
 graph TD
-    subgraph "LangGraph StateGraph Engine (src/services/langgraphEngine.js)"
+    subgraph "LangGraph StateGraph Engine (src/services/langgraphEngine.js) [Gemini 3.5 Flash/Pro]"
         direction TB
         Entry[Graph Entry Point] --> Node1[Node 1: ContextEnrichmentNode<br>Injects Full Itinerary, Weather Alerts, Profiles]
         Node1 --> Node2[Node 2: SubAIReasoningNode<br>Executes Individual Agent Logic: Justin, Alice, Bob, Charlie]
@@ -185,9 +202,23 @@ graph TD
         EdgeCond -->|Deadlock Detected| Node4
     end
 ```
-*Figure 2.2: LangGraph StateGraph multi-node execution pipeline showing typed channels, agent reasoning, and quorum routing.*
+*Figure 2.3: LangGraph StateGraph multi-node execution pipeline showing typed channels, agent reasoning, and quorum routing.*
 
-#### C. End-to-End User Journey & Closed-Loop Re-Planning Flowchart
+#### Diagram 4: 1-on-1 Confidential Persona Extraction & Agent State Machine (`Mermaid` State Diagram)
+```mermaid
+stateDiagram-v2
+    [*] --> Idle: User Enters Studio
+    Idle --> IngestPrompt: User Sends Confidential Chat
+    IngestPrompt --> ContextEnrichment: Ground with Destination & Seed Itinerary
+    ContextEnrichment --> GeminiInference: Invoke Gemini 3.5 Flash / Pro
+    GeminiInference --> EntityExtraction: Parse Step Limits, Budget Caps, Wake Times
+    EntityExtraction --> UpdateAgentPersona: Update State Channels (Alice-Bot, Bob-Bot, etc.)
+    UpdateAgentPersona --> SynchronizeSquadState: Save to LocalStorage & Dispatch to Squad Table
+    SynchronizeSquadState --> [*]: Persona Ready for Deliberation
+```
+*Figure 2.4: State diagram detailing how private constraints are extracted, validated by Gemini 3.5, and mapped to agent state channels.*
+
+#### Diagram 5: End-to-End System User Journey & Closed-Loop Self-Healing Flowchart (`Mermaid` Flowchart)
 ```mermaid
 graph TD
     subgraph "Phase 1: Confidential Constraint Extraction"
@@ -197,7 +228,7 @@ graph TD
         U4[Charlie: Sets 8,000 Step Cap, Zen Pace] --> S4[Charlie-Bot: Encrypted Persona]
     end
 
-    subgraph "Phase 2: LangGraph Squad Deliberation"
+    subgraph "Phase 2: LangGraph Squad Deliberation (Gemini 3.5)"
         S1 & S2 & S3 & S4 --> ST[Squad Conciliation Table]
         Lead[Aegis Lead AI Guide] --> ST
         ST --> LangGraph[LangGraph StateGraph Engine]
@@ -218,9 +249,85 @@ graph TD
         Soba --> UpdatedPlan[Master Itinerary Dynamically Updated]
     end
 ```
-*Figure 2.3: End-to-end user lifecycle pipeline from private intake to autonomous booking and live self-healing re-planning.*
+*Figure 2.5: End-to-end user lifecycle pipeline from private intake to autonomous booking and live self-healing re-planning.*
 
-#### D. Root-Cause Problem Tree Analysis (5 Whys)
+#### Diagram 6: Multi-Agent Quorum Deliberation Sequence (`Mermaid` Sequence Diagram)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Justin as Justin (Lead User)
+    actor Alice as Alice (Budget Guardian)
+    actor Bob as Bob (Nightlife Seeker)
+    actor Charlie as Charlie (Zen Curator)
+    participant Studio as 1-on-1 Concierge Studio
+    participant SubAIs as Sub-AI Agents (Justin-Bot, Alice-Bot, Bob-Bot, Charlie-Bot)
+    participant Table as Squad Conciliation Table
+    participant LangGraph as LangGraph StateGraph Engine
+    participant Aegis as Master Orchestrator (Gemini 3.5 Flash/Pro)
+    participant DemandAI as Demand AI Booking Engine (Sandbox v3.2)
+    participant News as World News & Disruption Radar
+
+    Note over Justin,Charlie: Phase 1: Private Constraint Extraction
+    Justin->>Studio: Sets $160 budget cap & authentic ramen craving
+    Alice->>Studio: Sets $150/d budget cap & authentic ramen craving
+    Bob->>Studio: Sets 10:30 AM wake lock & craft beer craving
+    Charlie->>Studio: Sets 8,000 steps cap & tranquil garden craving
+    Studio->>SubAIs: Registers private parameters into isolated agent states
+
+    Note over SubAIs,LangGraph: Phase 2: LangGraph Multi-Agent Deliberation
+    SubAIs->>Table: Dispatches agent representatives to Squad Table
+    Table->>LangGraph: Invokes StateGraph (Enrichment -> Reasoning -> Debate -> Conciliation)
+    LangGraph->>Aegis: Executes grounded Gemini 3.5 synthesis with thinking traces
+    Aegis-->>Table: Returns 4-Day Itinerary (94% Group Harmony Score)
+
+    Note over Table,DemandAI: Phase 3: Autonomous Zero-Touch Fulfillment
+    Table->>DemandAI: Executes 1-Click Autonomous Booking
+    DemandAI-->>Justin: Generates Flight PNR (#JL84X2) & Hotel Groove Voucher
+
+    Note over News,Table: Phase 4: Proactive Disruption & Re-planning
+    News->>Table: Satellite Alert: Coastal Gale Warning on Day 3
+    Table->>SubAIs: Triggers emergency contingency debate
+    SubAIs-->>Table: Unanimous 3/3 Vote on Soba Masterclass (Option C)
+    Table->>Aegis: Dynamically locks updated storm-safe itinerary
+```
+*Figure 2.6: Sequence diagram demonstrating multi-turn message passing, LangGraph state updates, and autonomous booking fulfillment.*
+
+#### Diagram 7: Proactive Weather & Transit Disruption Contingency Decision Tree (`Mermaid` Flowchart)
+```mermaid
+flowchart TD
+    Start[World News Radar Ingests Alert] --> CheckSeverity{Severity Level?}
+    CheckSeverity -->|Low| Inform[Log Note in Timeline Footer]
+    CheckSeverity -->|Medium| TransitReroute[Calculate Metro Sub-route via Asakusa]
+    CheckSeverity -->|High: Typhoon Gale| TriggerThreat[Flag Day 3 Activity: Tokyo Bay Cruise as THREATENED]
+    
+    TriggerThreat --> ReconveneTable[Reconvene Squad Conciliation Table]
+    ReconveneTable --> FormulateOptions[Aegis Synthesizes 3 Indoor Contingencies via Gemini 3.5]
+    FormulateOptions --> OptionA[Option A: Mori Art Museum - $24]
+    FormulateOptions --> OptionB[Option B: VR Zone & Cyber Karting - $60]
+    FormulateOptions --> OptionC[Option C: Soba Masterclass & Sake - $35]
+    
+    OptionA & OptionB & OptionC --> AgentVoting[Sub-AIs Audit Constraints & Vote]
+    AgentVoting --> QuorumEval{Quorum Reached?}
+    QuorumEval -->|Yes: Option C 3/3| AutoSwap[Auto-Replace Day 3 Slot with Storm-Safe Soba Class]
+    QuorumEval -->|No| RerunDebate[LangGraph Re-evaluates Compromise]
+    AutoSwap --> Confetti[Celebrate Consensus & Update Master Itinerary]
+```
+*Figure 2.7: Dynamic decision tree for real-time contingency handling and automated indoor schedule substitution.*
+
+#### Diagram 8: Demand AI Autonomous Booking & Manifest Fulfillment Pipeline (`Mermaid` Flowchart)
+```mermaid
+flowchart LR
+    A[Squad Approves Consensus Itinerary] --> B[Demand AI Engine Ingests Manifest]
+    B --> C[Passenger Profile Binding:<br>Passport, Seating 14A/14B/14C]
+    B --> D[Hotel Room Configuration:<br>Groove Shinjuku Twin/King]
+    C & D --> E[Booking.com Demand API Sandbox v3.2 Gateway]
+    E --> F[Generate Confirmed Flight PNR: #JL84X2]
+    E --> G[Generate Confirmed Hotel Ref: #BKG-DEMAND-749]
+    F & G --> H[Emit Pre-Authorized Zero-Touch Vouchers]
+```
+*Figure 2.8: Pipeline illustrating programmatic manifest binding and zero-touch booking fulfillment.*
+
+#### Diagram 9: Root-Cause Problem Tree Analysis (5 Whys Analysis)
 ```
 [VISIBLE SYMPTOM]: Group vacations end in interpersonal friction, hidden resentment, and planning fatigue.
    ▲
@@ -238,7 +345,7 @@ graph TD
                  ▲
                  └── [ROOT CAUSE]: Absence of an autonomous multi-agent execution engine.
 ```
-*Figure 2.4: 5 Whys Root-Cause Problem Tree diagnosing the systemic failures of traditional travel planning.*
+*Figure 2.9: 5 Whys Root-Cause Problem Tree diagnosing the systemic failures of traditional travel planning.*
 
 ---
 
@@ -246,7 +353,7 @@ graph TD
 
 | Date | Mentor | Detailed Critique / Feedback Received | Meaningful Changes Implemented & Architectural Evolution |
 | :--- | :--- | :--- | :--- |
-| **9 Sep 2026** | **Kueh Pang Teng** | *Criticised that the initial concept felt like a standalone mock text generator without real tool integrations or external APIs to make the system a complete, operational end-to-end platform.* | **Engineered Full Multi-API & Distribution Protocol Integration:**<br>1. **Google Gemini 1.5 Flash API:** Integrated live structured JSON schema generation and multi-agent conversational reasoning (`src/services/geminiService.js`).<br>2. **Booking.com Demand API Sandbox v3.2:** Implemented zero-touch autonomous flight PNR and hotel reservation engine (`src/services/bookingDemandAiService.js`).<br>3. **Wise (TransferWise) Rates API:** Built live mid-market foreign exchange conversion and bank markup transparency tools (`src/services/wiseService.js`).<br>4. **Xiaohongshu & Instagram Travel Intelligence:** Integrated verified real creator profile links, anti-trap guides (*“避坑指南”*), and photography reels (`src/services/rednoteService.js`, `src/services/instagramService.js`).<br>5. **Supabase Cloud Client:** Added real authentication and persistent session management (`src/services/supabaseClient.js`). |
+| **9 Sep 2026** | **Kueh Pang Teng** | *Criticised that the initial concept felt like a standalone mock text generator without real tool integrations or external APIs to make the system a complete, operational end-to-end platform.* | **Engineered Full Multi-API & Distribution Protocol Integration:**<br>1. **Google Gemini 3.5 Flash / Pro API:** Integrated live structured JSON schema generation and multi-agent conversational reasoning (`src/services/geminiService.js`).<br>2. **Booking.com Demand API Sandbox v3.2:** Implemented zero-touch autonomous flight PNR and hotel reservation engine (`src/services/bookingDemandAiService.js`).<br>3. **Wise (TransferWise) Rates API:** Built live mid-market foreign exchange conversion and bank markup transparency tools (`src/services/wiseService.js`).<br>4. **Xiaohongshu & Instagram Travel Intelligence:** Integrated verified real creator profile links, anti-trap guides (*“避坑指南”*), and photography reels (`src/services/rednoteService.js`, `src/services/instagramService.js`).<br>5. **Supabase Cloud Client:** Added real authentication and persistent session management (`src/services/supabaseClient.js`). |
 | **13 Sep 2026** | **Stefan** | *Criticised that the UI was too messy, lacked a fixed theme or cohesive layout, had cluttered poker table elements, inconsistent badges, and failed to guide users through a clear visual hierarchy.* | **Standardized Comprehensive UI/UX Design System:**<br>1. **Unified Design Tokens & Color Palette:** Rebuilt the interface using a cohesive modern palette (Slate `#f8fafc` canvas, Indigo `#6366f1` primary accents, Emerald `#10b981` consensus states, and Amber `#f59e0b` disruption alerts) with standardized `Plus Jakarta Sans` typography (`src/index.css`).<br>2. **Fixed 6-Tab Workspace Architecture:** Cleanly organized the application into dedicated views: `Master Itinerary`, `Squad Conciliation Table`, `1-on-1 Studio`, `Traveler Dossier`, `Booking Hub`, and `Budget Splitter` with a sticky collapsible sidebar (`src/components/Sidebar.jsx`).<br>3. **Overhauled Squad Conciliation Table (`MeetingTable.jsx`):** Replaced cluttered poker elements with a sleek, modern negotiation arena featuring dedicated agent pedestals, clean quorum indicators (3/3 Unanimous / Majority), transparent LangGraph thinking trace drawers, and structured 3-option dilemma cards.<br>4. **Standardized Modal Taxonomy:** Unified all modals (Demand AI Booking, Wise FX, RedNote, Instagram, Weather Reaction, Auth Gate) with matching glassmorphism headers, rounded-3xl corners, and consistent action buttons. |
 
 ---
@@ -260,9 +367,9 @@ graph TD
 
 | Screen Workspace | Key Interaction, Design Polish & User State Flow |
 | :--- | :--- |
-| **1. Master Itinerary & Timeline**<br>*(Gemini Orchestrator)* | • Clean day-by-day chronological timeline with advocate badges and cost breakdowns.<br>• AI Plan Generator Modal: Enter any destination & group parameters for instant generation.<br>• Integrated toggle between Tokyo Demo Itinerary and Visual Onboarding Guide. |
+| **1. Master Itinerary & Timeline**<br>*(Gemini 3.5 Orchestrator)* | • Clean day-by-day chronological timeline with advocate badges and cost breakdowns.<br>• AI Plan Generator Modal: Enter any destination & group parameters for instant generation.<br>• Integrated toggle between Tokyo Demo Itinerary and Visual Onboarding Guide. |
 | **2. Squad Conciliation Table**<br>*(LangGraph Multi-Agent Arena)* | • Interactive negotiation arena powered by LangGraph StateGraph engine (`MeetingTable.jsx`).<br>• 1-Click "Simulate Sub-AI Debate": Agents voice real-time rationale with speech bubbles.<br>• Transparent Thinking Traces drawer displaying step-by-step agent deliberation logic.<br>• Dynamic Quorum Indicator (3/3 Unanimous Consensus) & celebratory confetti launch. |
-| **3. Confidential 1-on-1 Studio**<br>*(Personal Concierge)* | • Private conversational stream with dedicated Sub-AI agent powered by live Gemini.<br>• Real-time constraint sliders: daily budget caps, wake-up locks, step thresholds, and dietary rules.<br>• Guaranteed privacy: private notes are strictly shielded from peers. |
+| **3. Confidential 1-on-1 Studio**<br>*(Personal Concierge)* | • Private conversational stream with dedicated Sub-AI agent powered by live Gemini 3.5.<br>• Real-time constraint sliders: daily budget caps, wake-up locks, step thresholds, and dietary rules.<br>• Guaranteed privacy: private notes are strictly shielded from peers. |
 | **4. Traveler Profile Dossier**<br>*(Squad Overview)* | • Comprehensive squad roster showing individual travel archetypes, roles, and status.<br>• Transparent breakdown of each traveler's declared constraints and agent persona. |
 | **5. Demand AI Booking Hub**<br>*(Demand API Sandbox v3.2)* | • Zero-touch autonomous flight & hotel reservation engine.<br>• Auto-generates confirmed Airline PNRs (JL 038) and Hotel Vouchers.<br>• Pre-authorized group pricing without manual checkout friction. |
 | **6. Wise Currency & Budget Splitter**<br>*(Mid-Market Transparency)* | • Live mid-market exchange rates (USD/JPY/SGD/EUR/GBP/AUD) via Wise API.<br>• Real-time bank fee markup comparisons and transparent per-person expense allocation. |
@@ -276,7 +383,7 @@ graph TD
 
 1. **Sub-AI Persona Diplomacy (The Anti-Conflict Buffer):**  
    *The Twist:* Instead of humans arguing with humans, humans confide in their private Sub-AIs, and the Sub-AIs negotiate with each other. This eliminates social awkwardness, budget embarrassment, and friendship strain.
-2. **LangGraph Multi-Agent StateGraph Negotiation:**  
+2. **LangGraph Multi-Agent StateGraph Negotiation (Gemini 3.5 Flash/Pro):**  
    *The Twist:* Formulates group trip coordination as a multi-objective mathematical optimization problem executed via a directed cyclic StateGraph (`src/services/langgraphEngine.js`). The system evaluates pareto-optimal trade-offs (budget ceiling vs. fatigue vs. excitement) with live quorum scoring.
 3. **Zero-Touch Autonomous Booking Engine (Demand API Sandbox v3.2):**  
    *The Twist:* Traditional travel apps stop at planning and send you to 5 external websites. EscapePlan binds manifest records programmatically to issue confirmed flight PNRs and hotel reservation vouchers autonomously.
@@ -292,7 +399,7 @@ graph TD
 | Feature Capability | EscapePlan AI (OneDirection) | Wanderlog / TripIt | Splitwise / Tricount | Generic ChatGPT / Gemini |
 | :--- | :---: | :---: | :---: | :---: |
 | **Confidential 1-on-1 Sub-AI Concierges** | ✅ **Yes (Dedicated Safe Space)** | ❌ No | ❌ No | ❌ No |
-| **LangGraph Multi-Agent Negotiation** | ✅ **Yes (StateGraph Engine)** | ❌ No | ❌ No | ❌ No |
+| **LangGraph Multi-Agent Negotiation** | ✅ **Yes (Gemini 3.5 Engine)** | ❌ No | ❌ No | ❌ No |
 | **Transparent Agent Thinking Traces** | ✅ **Yes (Auditable Drawer)** | ❌ No | ❌ No | ❌ No |
 | **Autonomous Flight & Hotel Booking** | ✅ **Yes (Demand API Sandbox)** | ❌ No (External links only)| ❌ No | ❌ No |
 | **Proactive Weather & Disruption Radar** | ✅ **Yes (Live Re-planning)** | ⚠️ Flight status only | ❌ No | ❌ No |
@@ -319,7 +426,7 @@ graph TD
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │  INTELLIGENCE & MULTI-AGENT ORCHESTRATION TIER                                                         │
 │  • LangGraph Multi-Agent StateGraph Engine (Directed cyclic graph with typed channels)                 │
-│  • Google Gemini 1.5 Flash API (Strict JSON Schema validation, candidate model resolution)             │
+│  • Google Gemini 3.5 Flash / Pro API (Strict JSON Schema validation, candidate model resolution)       │
 │  • Client-Side Sub-AI Agent State Machine (Isolated private memory registers)                          │
 │  • LocalStorage & Supabase Session Cache (API keys, traveler personas, custom itineraries)             │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
@@ -334,6 +441,7 @@ graph TD
 │  • 100% Client-Side Resilience (Zero cold starts, zero server downtime)                                │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+*Figure 5.1: High-level multi-tier infrastructure and subsystem integration topology.*
 
 #### Layer-by-Layer Technical Evaluation
 
@@ -341,7 +449,7 @@ graph TD
 | :--- | :--- | :--- | :--- |
 | **Frontend Framework** | **React 18 + Vite** | High rendering efficiency for multi-turn agent debate animations; lightning-fast development cycle. | *Constraint:* Managing cross-agent state across 6 workspaces.<br>*Mitigation:* Unidirectional state lifting with structured state machines (`src/App.jsx`). |
 | **Multi-Agent Engine** | **LangGraph StateGraph** | Directed cyclic graph with typed channels, node modularity, and deterministic quorum thresholds. | *Constraint:* Potential agent negotiation deadlocks.<br>*Mitigation:* Max-iteration safeguard (25 cycles) + Aegis mediator arbitration. |
-| **AI Orchestration** | **Gemini 1.5 Flash** | Ultra-low latency (~800ms), massive context window, native structured JSON schema compliance. | *Constraint:* API rate-limits & key dependencies.<br>*Mitigation:* In-app API Key modal + candidate model auto-fallback engine. |
+| **AI Orchestration** | **Gemini 3.5 Flash / Pro** | Ultra-low latency (~600ms), massive context window, native structured JSON schema compliance. | *Constraint:* API rate-limits & key dependencies.<br>*Mitigation:* In-app API Key modal + candidate model auto-fallback engine. |
 | **Booking Engine** | **Demand API Sandbox v3.2** | Mirrors Booking.com enterprise distribution protocol for automated flight and hotel ticketing. | *Constraint:* Live production affiliate keys require enterprise B2B contract.<br>*Mitigation:* Sandbox simulation layer adhering to strict v3.2 schemas. |
 | **FX & Payments** | **Wise (TransferWise) API** | Real mid-market rates without hidden bank spreads; developer-friendly REST specs. | *Constraint:* Browser CORS restrictions.<br>*Mitigation:* High-precision client-side benchmark engine + FastAPI backend proxy snippet. |
 | **Backend & Auth** | **Supabase Client** | Fast, lightweight PostgreSQL auth and cloud persistence with zero server setup overhead. | *Constraint:* Network offline resilience.<br>*Mitigation:* Seamless fallback to local storage mock data state. |
@@ -362,7 +470,7 @@ sequenceDiagram
     participant SubAIs as Sub-AI Agents (Justin-Bot, Alice-Bot, Bob-Bot, Charlie-Bot)
     participant Table as Squad Conciliation Table
     participant LangGraph as LangGraph StateGraph Engine
-    participant Aegis as Master Orchestrator (Gemini 1.5 Flash)
+    participant Aegis as Master Orchestrator (Gemini 3.5 Flash/Pro)
     participant DemandAI as Demand AI Booking Engine (Sandbox v3.2)
     participant News as World News & Disruption Radar
 
@@ -376,7 +484,7 @@ sequenceDiagram
     Note over SubAIs,LangGraph: Phase 2: LangGraph Multi-Agent Deliberation
     SubAIs->>Table: Dispatches agent representatives to Squad Table
     Table->>LangGraph: Invokes StateGraph (Enrichment -> Reasoning -> Debate -> Conciliation)
-    LangGraph->>Aegis: Executes grounded Gemini synthesis with thinking traces
+    LangGraph->>Aegis: Executes grounded Gemini 3.5 synthesis with thinking traces
     Aegis-->>Table: Returns 4-Day Itinerary (94% Group Harmony Score)
 
     Note over Table,DemandAI: Phase 3: Autonomous Zero-Touch Fulfillment
@@ -389,6 +497,7 @@ sequenceDiagram
     SubAIs-->>Table: Unanimous 3/3 Vote on Soba Masterclass (Option C)
     Table->>Aegis: Dynamically locks updated storm-safe itinerary
 ```
+*Figure 5.2: Complete end-to-end multi-agent execution sequence diagram.*
 
 ---
 
@@ -401,7 +510,7 @@ sequenceDiagram
 │ PHASE 1: Multi-Agent Personalization & LangGraph Engine (100% Complete - MVP Core)                     │
 │ • [x] Confidential 1-on-1 Personalization Studio with private conversational Sub-AIs.                  │
 │ • [x] LangGraph StateGraph engine with typed channels, debate simulation, and thinking traces.         │
-│ • [x] Gemini 1.5 Flash API integration with candidate model resolution & structured JSON schema.       │
+│ • [x] Gemini 3.5 Flash / Pro API integration with candidate model resolution & structured JSON schema. │
 ├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ PHASE 2: Autonomous Fulfillment & Intelligence Layer (100% Complete - MVP Core)                        │
 │ • [x] Booking.com Demand API Sandbox v3.2 autonomous flight PNR and hotel voucher engine.              │
@@ -425,7 +534,7 @@ sequenceDiagram
 
 | Team Member | Core Focus & Responsibilities | Key Deliverables |
 | :--- | :--- | :--- |
-| **Justin Tan Jing Yi** | *Full-Stack Lead & Multi-Agent Architecture* | • LangGraph StateGraph engine (`langgraphEngine.js`) & Gemini 1.5 Flash integration<br>• Squad Conciliation Table UI & dynamic thinking trace drawer (`MeetingTable.jsx`)<br>• Demand AI Booking Engine (`bookingDemandAiService.js`) & automated test suite |
+| **Justin Tan Jing Yi** | *Full-Stack Lead & Multi-Agent Architecture* | • LangGraph StateGraph engine (`langgraphEngine.js`) & Gemini 3.5 Flash/Pro integration<br>• Squad Conciliation Table UI & dynamic thinking trace drawer (`MeetingTable.jsx`)<br>• Demand AI Booking Engine (`bookingDemandAiService.js`) & automated test suite |
 | **Lee Sing Yee** | *Product Design, UX & Social Intelligence* | • 1-on-1 Confidential Personalization Studio design (`PersonalizationStudio.jsx`)<br>• Xiaohongshu & Instagram social proof curation & modal systems<br>• Design tokens, unified color palette, responsive UI components & user flows |
 | **Kow Yun Shen** | *Fintech Integrations & Operations Engine* | • Wise Currency API integration & mid-market FX converter (`wiseService.js`)<br>• Automated Budget Splitter & fair per-person cost calculations (`BudgetSplitter.jsx`)<br>• World News & Weather Disruption Radar architecture (`WorldNewsRadarModal.jsx`) |
 
@@ -501,7 +610,7 @@ sequenceDiagram
    Add your Gemini API key (or enter it directly in the app UI via the API Key Modal):
    ```env
    VITE_GEMINI_API_KEY=your_gemini_api_key_here
-   VITE_GEMINI_MODEL=gemini-1.5-flash
+   VITE_GEMINI_MODEL=gemini-3.5-flash
    ```
 
 4. **Launch the local development server:**
@@ -525,5 +634,5 @@ sequenceDiagram
 <div align="center">
   <strong>EscapePlan AI — Engineered with ❤️ by Team OneDirection</strong><br>
   <em>Justin Tan Jing Yi • Lee Sing Yee • Kow Yun Shen</em><br>
-  <span>Eliminating group travel friction with multi-agent intelligence.</span>
+  <span>Eliminating group travel friction with multi-agent intelligence (Gemini 3.5).</span>
 </div>

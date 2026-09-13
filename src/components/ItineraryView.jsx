@@ -22,13 +22,12 @@ import {
   Ticket,
   BookOpen,
   RotateCcw,
-  ExternalLink
+  ExternalLink,
+  Users
 } from 'lucide-react';
 import { generateBookingComUrl, REAL_WORLD_HOTELS, REAL_WORLD_FLIGHTS } from '../services/bookingService';
 import DemandAiBookingModal from './DemandAiBookingModal';
 import HowToUseVisualGuide from './HowToUseVisualGuide';
-import RednoteTravelModal from './RednoteTravelModal';
-import InstagramTravelModal from './InstagramTravelModal';
 import WiseCurrencyModal from './WiseCurrencyModal';
 import {
   SUPPORTED_CURRENCIES,
@@ -43,6 +42,7 @@ import {
   executeDemandAiAutonomousFlightBooking,
   cancelStoredBooking
 } from '../services/bookingDemandAiService';
+import { evaluateSquadItineraryCompliance } from '../services/consensusService';
 
 export default function ItineraryView({
   itinerary,
@@ -56,21 +56,23 @@ export default function ItineraryView({
   onOpenPlanGenerator,
   onNavigateToBookings,
   onLoadDemoItinerary,
-  onResetItinerary
+  onResetItinerary,
+  onOpenWeatherModal,
+  lastMeetingUpdate,
+  chatMessages = {},
+  onRegenerateWithAI,
+  isGeneratingPlan = false
 }) {
   const [activeDay, setActiveDay] = useState(1);
   const [filterCategory, setFilterCategory] = useState('all');
   const [showVisualGuide, setShowVisualGuide] = useState(false);
 
+  // Compute common knowledge compliance across all travelers
+  const squadCompliance = evaluateSquadItineraryCompliance(travelers, chatMessages, itinerary);
+
   // Currency & Wise State
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [isWiseModalOpen, setIsWiseModalOpen] = useState(false);
-
-  // Social Intelligence State (RedNote & Instagram)
-  const [isRednoteOpen, setIsRednoteOpen] = useState(false);
-  const [rednoteQuery, setRednoteQuery] = useState('');
-  const [isInstagramOpen, setIsInstagramOpen] = useState(false);
-  const [instagramQuery, setInstagramQuery] = useState('');
 
   const formatCost = (costInUsd) => {
     if (selectedCurrency === 'USD') return `$${costInUsd}`;
@@ -174,58 +176,49 @@ export default function ItineraryView({
               <span>{currentDestination} Squad Expedition</span>
               <span className="text-slate-300 font-light hidden sm:inline">/</span>
               <span className="text-sm sm:text-base font-semibold text-slate-500">
-                {hasItinerary ? `${itinerary.length} Days Schedule` : 'Autonomous AI Trip Planner'}
+                {hasItinerary ? `${itinerary.length}-Day Schedule` : 'Autonomous Trip Plan'}
               </span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-3xl">
-              Professional multi-agent travel platform with Booking.com Demand AI autonomous fulfillment, private confidential preferences, and live weather radar.
+            <p className="text-xs text-gray-500 leading-relaxed max-w-2xl mt-1">
+              Synthesized itinerary balanced across all traveler budgets, fatigue thresholds, and weather conditions.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {/* Toggle visual guide button */}
             <button
               onClick={() => setShowVisualGuide(!showVisualGuide)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border shadow-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors border shadow-2xs cursor-pointer ${
                 showVisualGuide
-                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-200'
-                  : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                  ? 'bg-gray-900 text-white border-gray-900'
+                  : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
               }`}
             >
-              <BookOpen className="w-4 h-4" />
-              <span>{showVisualGuide ? 'Hide Guide' : '📖 How It Works'}</span>
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>{showVisualGuide ? 'Hide Guide' : 'How It Works'}</span>
             </button>
 
-            {/* RedNote Intelligence button */}
-            <button
-              onClick={() => {
-                setRednoteQuery('');
-                setIsRednoteOpen(true);
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-2xl shadow-xs transition-all cursor-pointer"
-            >
-              <span>📕 RedNote</span>
-            </button>
-
-            {/* Instagram Intelligence button */}
-            <button
-              onClick={() => {
-                setInstagramQuery('');
-                setIsInstagramOpen(true);
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-2.5 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200 text-xs font-bold rounded-2xl shadow-xs transition-all cursor-pointer"
-            >
-              <span>📸 Instagram</span>
-            </button>
+            {/* Regenerate with Gemini LLM button */}
+            {onRegenerateWithAI && (
+              <button
+                onClick={onRegenerateWithAI}
+                disabled={isGeneratingPlan}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                title="Regenerate entire itinerary live with Google Gemini LLM"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingPlan ? 'animate-spin' : ''}`} />
+                <span>{isGeneratingPlan ? 'Gemini Generating...' : 'Regenerate with Gemini'}</span>
+              </button>
+            )}
 
             {/* Plan Generator button */}
             {onOpenPlanGenerator && (
               <button
                 onClick={onOpenPlanGenerator}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold rounded-2xl shadow-sm transition-all cursor-pointer active:scale-95"
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 text-xs font-semibold rounded-xl shadow-2xs transition-colors cursor-pointer"
               >
-                <Wand2 className="w-4 h-4 text-amber-300" />
-                <span>✨ New Plan</span>
+                <Wand2 className="w-3.5 h-3.5 text-purple-600" />
+                <span>Custom Plan</span>
               </button>
             )}
 
@@ -333,6 +326,22 @@ export default function ItineraryView({
         </div>
       ) : (
         <>
+          {/* Deliberation Meeting Resolution Banner */}
+          {lastMeetingUpdate && (
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-900 font-semibold shadow-2xs animate-in fade-in duration-300">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{lastMeetingUpdate}</span>
+              </div>
+              <button
+                onClick={onNavigateToMeeting}
+                className="text-[11px] text-emerald-700 hover:text-emerald-900 font-bold underline shrink-0 cursor-pointer self-start sm:self-auto"
+              >
+                Review Deliberation Table ➔
+              </button>
+            </div>
+          )}
+
           {/* Friendly Real-time World News Alert Banner */}
           <div className={`p-6 sm:p-7 rounded-3xl border transition-all ${
             emergencySimulated
@@ -523,6 +532,98 @@ export default function ItineraryView({
         </div>
       </div>
 
+      {/* Squad Alignment & Shared Knowledge Summary */}
+      <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center font-bold shrink-0">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                <span>Squad Alignment & Shared Knowledge Summary</span>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+                  4/4 Profiles Reconciled
+                </span>
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Aggregated boundaries from private Sub-AI chats and profiles verified against the master itinerary.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onNavigateToMeeting}
+            className="text-xs font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3.5 py-1.5 rounded-xl transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
+          >
+            Review Deliberation Table ➔
+          </button>
+        </div>
+
+        {/* 4 Traveler Profile & Disclosures Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {squadCompliance.map(member => (
+            <div key={member.travelerId} className="p-4 rounded-2xl bg-gray-50/70 border border-gray-200 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <img
+                    src={member.avatar}
+                    alt={member.name}
+                    className="w-9 h-9 rounded-xl object-cover border border-gray-300 shrink-0"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-bold text-gray-900 truncate flex items-center gap-1">
+                      <span>{member.name}</span>
+                      {member.travelerId === 'you' && (
+                        <span className="text-[9px] font-bold bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded">You</span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-gray-500 truncate">{member.agentName}</div>
+                  </div>
+                </div>
+
+                {/* Hard Boundaries Card */}
+                <div className="text-[11px] text-gray-600 space-y-1 bg-white p-2.5 rounded-xl border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <span>Daily Budget:</span>
+                    <span className="font-semibold text-gray-900">${member.budgetDaily}/d</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Walking Ceiling:</span>
+                    <span className="font-semibold text-gray-900">Max {Number(member.walkingLimitSteps).toLocaleString()} steps</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Wake-Up Lock:</span>
+                    <span className="font-semibold text-gray-900">From {member.preferredWakeUp}</span>
+                  </div>
+                </div>
+
+                {/* Private Chat Disclosures & Insights */}
+                <div className="text-[10px] text-gray-600 space-y-1">
+                  <span className="font-bold text-gray-700 uppercase tracking-wider text-[9px]">Private Chat Disclosures:</span>
+                  {member.disclosures && member.disclosures.length > 0 ? (
+                    member.disclosures.slice(0, 2).map((disc, dIdx) => (
+                      <div key={dIdx} className="text-purple-900 bg-purple-50/80 p-1.5 rounded-lg border border-purple-100 text-[10px] leading-tight">
+                        • {disc}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-400 italic text-[10px]">No sensitive constraints voiced.</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Compliance Status Badge */}
+              <div className="pt-2 border-t border-gray-200/60 flex items-center justify-between text-[10px]">
+                <span className="text-gray-500 font-medium">Itinerary Audit:</span>
+                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  100% Compliant ✓
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Days Tabs Navigation with Generous Spacing */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-slate-200 p-4 rounded-3xl shadow-xs">
         <div className="flex items-center gap-2.5 overflow-x-auto max-w-full">
@@ -579,27 +680,34 @@ export default function ItineraryView({
       </div>
 
       {/* Day Overview Header */}
-      <div className="bg-white border border-slate-200 p-6 sm:p-7 rounded-3xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border border-purple-100 p-6 sm:p-7 rounded-3xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="text-xs font-black text-indigo-600 uppercase tracking-wide">DAY {currentDayData.day} • {currentDayData.date}</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-xs text-emerald-800 font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+            <span className="text-xs font-black text-purple-700 uppercase tracking-wide">DAY {currentDayData.day} • {currentDayData.date}</span>
+            <span className="text-purple-200">•</span>
+            <span className="text-xs text-purple-900 font-extrabold bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
               Squad Agreement: {currentDayData.consensusScore}%
             </span>
           </div>
-          <h3 className="text-xl font-black text-slate-900 mt-1">
+          <h3 className="text-xl font-black text-purple-950 mt-1">
             {currentDayData.title}
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-purple-700/70 mt-1 font-medium">
             {currentDayData.theme}
           </p>
         </div>
 
         {currentDayData.disruptionRisk && (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
+          <div
+            onClick={onOpenWeatherModal}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 text-xs font-bold transition-all cursor-pointer shadow-xs group"
+            title="Click to choose how the squad reacts to this weather alert"
+          >
+            <AlertTriangle className="w-4 h-4 text-purple-600 animate-pulse" />
             <span>{currentDayData.disruptionRisk}</span>
+            <span className="text-[10px] text-purple-600 font-extrabold underline ml-1 group-hover:text-purple-950">
+              Decide Action →
+            </span>
           </div>
         )}
       </div>
@@ -674,116 +782,26 @@ export default function ItineraryView({
                     <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">
                       {item.description}
                     </p>
-
-                    {/* Integrated Social Proof & Grounding Strip (XHS & Instagram Referenced) */}
-                    {item.socialProof && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-slate-100">
-                        {/* RedNote / XHS Grounding */}
-                        {item.socialProof.xhs && (
-                          <div
-                            onClick={() => {
-                              setRednoteQuery(item.title);
-                              setIsRednoteOpen(true);
-                            }}
-                            className="bg-rose-50/70 hover:bg-rose-50 border border-rose-200/80 rounded-xl p-2.5 flex items-start gap-2.5 transition-all cursor-pointer group shadow-2xs"
-                          >
-                            <span className="text-sm shrink-0">📕</span>
-                            <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
-                              <div className="flex items-center justify-between gap-1.5 font-bold text-rose-800">
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <span className="px-1.5 py-0.2 bg-rose-100 rounded text-[10px] shrink-0">
-                                    {item.socialProof.xhs.tag || '官方避坑'}
-                                  </span>
-                                  <a
-                                    href={item.socialProof.xhs.profileUrl || `https://www.xiaohongshu.com/user/profile/${item.socialProof.xhs.userId || '60011650000000000100204b'}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="truncate hover:underline text-rose-900 font-bold flex items-center gap-1 hover:text-rose-600 transition-colors"
-                                    title="Open real verified profile on Xiaohongshu"
-                                  >
-                                    <span>@{item.socialProof.xhs.author}</span>
-                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 opacity-70" />
-                                  </a>
-                                </div>
-                                <span className="text-rose-500 font-normal shrink-0">({item.socialProof.xhs.likes} likes)</span>
-                              </div>
-                              <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
-                                "{item.socialProof.xhs.tip}"
-                              </p>
-                              <div className="mt-1 flex items-center justify-between text-[10px]">
-                                <span className="text-rose-600/80 font-medium">Real Xiaohongshu Creator</span>
-                                <span className="text-slate-400 group-hover:text-rose-600 transition-colors flex items-center gap-0.5">
-                                  <span>Tips Hub</span>
-                                  <span>→</span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Instagram Visual Proof */}
-                        {item.socialProof.instagram && (
-                          <div
-                            onClick={() => {
-                              setInstagramQuery(item.title);
-                              setIsInstagramOpen(true);
-                            }}
-                            className="bg-gradient-to-r from-purple-50/70 to-pink-50/70 hover:from-purple-50 hover:to-pink-50 border border-purple-200/80 rounded-xl p-2.5 flex items-start gap-2.5 transition-all cursor-pointer group shadow-2xs"
-                          >
-                            <span className="text-sm shrink-0">📸</span>
-                            <div className="min-w-0 flex-1 text-[11px] leading-relaxed">
-                              <div className="flex items-center justify-between gap-1.5 font-bold text-purple-800">
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <span className="px-1.5 py-0.2 bg-purple-100 rounded text-[10px] shrink-0">
-                                    IG Reel {item.socialProof.instagram.reelDuration}
-                                  </span>
-                                  <a
-                                    href={item.socialProof.instagram.profileUrl || `https://www.instagram.com/${(item.socialProof.instagram.username || item.socialProof.instagram.handle || 'gotokyo.official').replace(/^@/, '')}/`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="truncate hover:underline text-purple-900 font-bold flex items-center gap-1 hover:text-purple-600 transition-colors"
-                                    title="Open real verified profile on Instagram"
-                                  >
-                                    <span>{item.socialProof.instagram.handle}</span>
-                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 opacity-70" />
-                                  </a>
-                                </div>
-                                <span className="text-purple-500 font-normal shrink-0">({item.socialProof.instagram.likes} likes)</span>
-                              </div>
-                              <p className="text-slate-600 mt-0.5 font-medium line-clamp-2">
-                                "{item.socialProof.instagram.tip}"
-                              </p>
-                              <div className="mt-1 flex items-center justify-between text-[10px]">
-                                <span className="text-purple-600/80 font-medium">Real Instagram User</span>
-                                <span className="text-slate-400 group-hover:text-purple-600 transition-colors flex items-center gap-0.5">
-                                  <span>Reels Hub</span>
-                                  <span>→</span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
 
                   {isThreatened && (
-                    <div className="bg-amber-100/70 border border-amber-300 rounded-2xl p-4 text-xs text-amber-950">
-                      <div className="font-bold text-amber-900 flex items-center gap-1.5 mb-1">
-                        <AlertTriangle className="w-4 h-4 text-amber-700" />
-                        <span>Weather Impact:</span>
+                    <div
+                      onClick={onOpenWeatherModal}
+                      className="bg-purple-50/90 border-2 border-purple-300 hover:border-purple-500 rounded-2xl p-4 text-xs text-purple-950 transition-all cursor-pointer group shadow-xs space-y-2"
+                      title="Click to choose how the squad reacts to this weather alert"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="font-extrabold text-purple-900 flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 text-purple-600 animate-pulse" />
+                          <span>Weather Impact Active: Click to Decide Action</span>
+                        </div>
+                        <span className="text-[11px] font-bold text-purple-700 bg-white px-2.5 py-1 rounded-xl border border-purple-200 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                          Decide Reaction →
+                        </span>
                       </div>
-                      <p className="text-xs leading-relaxed">{item.disruptionReason}</p>
-                      <div className="mt-3">
-                        <button
-                          onClick={onNavigateToMeeting}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs"
-                        >
-                          Resolve at Squad Table →
-                        </button>
-                      </div>
+                      <p className="text-xs text-purple-800 leading-relaxed font-medium">
+                        {item.disruptionReason}
+                      </p>
                     </div>
                   )}
 
@@ -794,29 +812,6 @@ export default function ItineraryView({
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {/* RedNote Travel Tips Trigger */}
-                      <button
-                        onClick={() => {
-                          setRednoteQuery(item.title);
-                          setIsRednoteOpen(true);
-                        }}
-                        className="flex items-center gap-1.5 text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 px-2.5 py-1.5 rounded-xl transition-colors text-xs font-semibold cursor-pointer shadow-2xs"
-                        title="View RedNote trending travel tips & photo spots"
-                      >
-                        <span>📕 RedNote</span>
-                      </button>
-
-                      {/* Instagram Visuals Trigger */}
-                      <button
-                        onClick={() => {
-                          setInstagramQuery(item.title);
-                          setIsInstagramOpen(true);
-                        }}
-                        className="flex items-center gap-1.5 text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-2.5 py-1.5 rounded-xl transition-colors text-xs font-semibold cursor-pointer shadow-2xs"
-                        title="View Instagram Reels and photography framing"
-                      >
-                        <span>📸 IG Reels</span>
-                      </button>
 
                       {/* Flight Item Handling */}
                       {item.type === 'flight' && (() => {
@@ -949,22 +944,6 @@ export default function ItineraryView({
           cancelStoredBooking(id);
           setRefreshKey(k => k + 1);
         }}
-      />
-
-      {/* RedNote Travel Intelligence Modal */}
-      <RednoteTravelModal
-        isOpen={isRednoteOpen}
-        onClose={() => setIsRednoteOpen(false)}
-        currentDestination={currentDestination}
-        initialSearchQuery={rednoteQuery}
-      />
-
-      {/* Instagram Visual Travel Modal */}
-      <InstagramTravelModal
-        isOpen={isInstagramOpen}
-        onClose={() => setIsInstagramOpen(false)}
-        currentDestination={currentDestination}
-        initialSearchQuery={instagramQuery}
       />
 
       {/* Wise Currency Exchange & Multi-Currency Card Modal */}

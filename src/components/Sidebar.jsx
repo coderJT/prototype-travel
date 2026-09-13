@@ -4,66 +4,60 @@ import {
   Users,
   Calendar,
   MessageSquare,
-  Wallet,
-  Plane,
-  Key,
-  Radio,
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
+  User,
+  Plus,
   PanelLeftClose,
-  X
+  X,
+  ShieldCheck,
+  LogIn,
+  LogOut
 } from 'lucide-react';
-import { hasApiKey } from '../services/geminiService';
+import { hasApiKey, getActiveModelName } from '../services/geminiService';
 
 export default function Sidebar({
   activeTab,
   setActiveTab,
   currentTraveler,
   setCurrentTraveler,
-  travelers,
-  newsAlerts,
-  onOpenNewsRadar,
+  travelers = [],
+  currentDestination = 'Tokyo',
+  isOpen = true,
+  onToggle,
+  onOpenCreateTrip,
+  onOpenCreateAccount,
   onOpenApiKeyModal,
-  onOpenRednote,
-  onOpenInstagram,
-  onOpenWise,
-  currentDestination,
-  isOpen,
-  onToggle
+  authUser,
+  onOpenAuthModal,
+  onSignOut,
+  activeTrip,
+  onOpenTripPortal
 }) {
   const keyActive = hasApiKey();
 
   const navItems = [
     {
-      id: 'itinerary',
-      label: 'Trip Itinerary',
-      description: 'Master Timeline & Visual Guide',
-      icon: Calendar
-    },
-    {
-      id: 'meeting',
-      label: 'The Round Table',
-      description: 'Multi-Agent Deliberation',
-      icon: Users
-    },
-    {
       id: 'personal',
-      label: 'Personal Sub-AI',
-      description: '1-on-1 Confidential Chat',
+      label: 'Agent Chat',
+      description: `1-on-1 with ${currentTraveler?.agentName || 'Sub-AI'}`,
       icon: MessageSquare
     },
     {
-      id: 'bookings',
-      label: 'Live Bookings',
-      description: 'Demand AI Autonomous Booking',
-      icon: Plane
+      id: 'meeting',
+      label: 'Meeting Table',
+      description: 'Deliberation & Consensus',
+      icon: Users
     },
     {
-      id: 'budget',
-      label: 'Group Budget',
-      description: 'Fair Expense Ledger',
-      icon: Wallet
+      id: 'profile',
+      label: 'Traveler Profile',
+      description: 'Budget, pacing & limits',
+      icon: User
+    },
+    {
+      id: 'itinerary',
+      label: 'Master Itinerary',
+      description: 'Timeline & Disruption Plan',
+      icon: Calendar
     }
   ];
 
@@ -74,26 +68,27 @@ export default function Sidebar({
       {/* Mobile Backdrop */}
       <div
         onClick={onToggle}
-        className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-xs lg:hidden transition-opacity"
+        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs lg:hidden transition-opacity"
       />
 
       {/* Sidebar Container */}
-      <aside className="fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-72 h-screen overflow-y-auto bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 select-none shadow-xl lg:shadow-none animate-in slide-in-from-left duration-250">
+      <aside className="fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-68 h-screen overflow-y-auto bg-white border-r border-gray-200 flex flex-col justify-between shrink-0 select-none shadow-xl lg:shadow-none animate-in slide-in-from-left duration-250">
         {/* Top Brand & Header Area */}
-        <div className="p-6">
+        <div className="p-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-md shadow-indigo-100 shrink-0">
-                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-                  <Compass className="w-6 h-6 text-indigo-600 animate-spin" style={{ animationDuration: '35s' }} />
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-xs shrink-0">
+                <Compass className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="font-black text-lg text-slate-900 tracking-tight leading-tight">
-                  EscapePlan <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">AI</span>
+                <h1 className="font-bold text-base text-gray-900 tracking-tight leading-tight flex items-center gap-1.5">
+                  <span>EscapePlan</span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                    AI
+                  </span>
                 </h1>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Multi-Agent Squad
+                <p className="text-[11px] text-gray-500 font-medium">
+                  Autonomous Squad Planner
                 </p>
               </div>
             </div>
@@ -101,27 +96,49 @@ export default function Sidebar({
             {/* Collapse / Close Button */}
             <button
               onClick={onToggle}
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
               title="Collapse Sidebar"
             >
-              <PanelLeftClose className="w-5 h-5 hidden lg:block" />
-              <X className="w-5 h-5 lg:hidden" />
+              <PanelLeftClose className="w-4 h-4 hidden lg:block" />
+              <X className="w-4 h-4 lg:hidden" />
             </button>
           </div>
 
-          {/* Current Destination Badge */}
-          <div className="mt-5 p-3 rounded-2xl bg-gradient-to-r from-indigo-50/70 to-purple-50/70 border border-indigo-100/80 flex items-center justify-between">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Trip</div>
-              <div className="text-xs font-extrabold text-slate-800">{currentDestination} Escape</div>
+          {/* Current Destination, Invite Code & Trip Portal Button */}
+          <div className="mt-5 p-3 rounded-xl bg-gray-50 border border-gray-200 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 pr-1">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                  Current Trip
+                </div>
+                <div className="text-xs font-bold text-gray-900 truncate">
+                  {activeTrip?.title || currentDestination}
+                </div>
+              </div>
+              <button
+                onClick={onOpenTripPortal}
+                className="px-2 py-1 rounded-lg bg-white hover:bg-gray-100 text-gray-800 border border-gray-200 text-[11px] font-semibold transition-colors flex items-center gap-1 shadow-2xs cursor-pointer shrink-0"
+                title="Join trip with code or create new trip"
+              >
+                <span>Portal</span>
+              </button>
             </div>
-            <span className="text-base">🌸</span>
+            <div className="pt-1.5 border-t border-gray-200/60 flex items-center justify-between text-[11px]">
+              <span className="text-gray-500">Invite Code:</span>
+              <button
+                onClick={onOpenTripPortal}
+                className="font-mono font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 hover:bg-purple-100 transition-colors cursor-pointer"
+                title="Click to view or join another trip"
+              >
+                {activeTrip?.inviteCode || 'TOKYO-77'}
+              </button>
+            </div>
           </div>
 
-          {/* Navigation Menu with Spacious Padding */}
-          <nav className="mt-6 space-y-2">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">
-              Trip Views
+          {/* Navigation Items */}
+          <nav className="mt-5 space-y-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-1.5">
+              Workspace
             </div>
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -131,26 +148,19 @@ export default function Sidebar({
                   key={item.id}
                   onClick={() => {
                     setActiveTab(item.id);
-                    // Close on mobile after click
                     if (window.innerWidth < 1024) onToggle();
                   }}
-                  className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all text-left ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-left cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-50/80 text-indigo-950 font-bold border border-indigo-200/80 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium'
+                      ? 'bg-purple-50 text-purple-900 font-semibold border border-purple-100'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                      isActive ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold leading-tight">{item.label}</div>
-                      <div className="text-[10px] text-slate-400 font-normal mt-0.5 leading-none">
-                        {item.description}
-                      </div>
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-600' : 'text-gray-400'}`} />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs leading-tight">{item.label}</div>
+                    <div className="text-[10px] text-gray-400 font-normal truncate mt-0.5">
+                      {item.description}
                     </div>
                   </div>
                 </button>
@@ -159,101 +169,108 @@ export default function Sidebar({
           </nav>
         </div>
 
-        {/* Bottom Area: Controls & Traveler Persona Card */}
-        <div className="p-6 border-t border-slate-100 space-y-4">
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={onOpenNewsRadar}
-              className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50 text-slate-700 hover:text-amber-900 border border-slate-200 text-xs font-bold transition-all"
-            >
-              <Radio className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-              <span>Radar ({newsAlerts.length})</span>
-            </button>
-
-            <button
-              onClick={onOpenApiKeyModal}
-              className={`flex items-center justify-center gap-1.5 p-2.5 rounded-xl border text-xs font-bold transition-all ${
-                keyActive
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                  : 'bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-purple-800 border-slate-200'
-              }`}
-            >
-              <Key className="w-3.5 h-3.5 text-purple-600" />
-              <span>{keyActive ? 'API Active' : 'Set Key'}</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {onOpenRednote && (
+        {/* Bottom Area: User Auth & Active Traveler Profile */}
+        <div className="p-5 border-t border-gray-200 space-y-3">
+          {/* Active Traveler Switcher */}
+          <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-2">
+            <div className="flex items-center justify-between text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
+              <span>Active Profile</span>
               <button
-                onClick={onOpenRednote}
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                onClick={onOpenCreateAccount}
+                className="text-[10px] text-purple-600 hover:text-purple-800 font-bold flex items-center gap-0.5 cursor-pointer"
               >
-                <span>📕 RedNote</span>
+                <Plus className="w-3 h-3" />
+                <span>Add Traveler</span>
               </button>
-            )}
-
-            {onOpenInstagram && (
-              <button
-                onClick={onOpenInstagram}
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
-              >
-                <span>📸 Instagram</span>
-              </button>
-            )}
-          </div>
-
-          {onOpenWise && (
-            <button
-              onClick={onOpenWise}
-              className="w-full flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 text-xs font-bold transition-all cursor-pointer shadow-2xs"
-            >
-              <div className="flex items-center gap-1.5">
-                <span>💳 Wise FX Card</span>
-              </div>
-              <span className="text-[10px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">
-                1 USD = ¥153.42
-              </span>
-            </button>
-          )}
-
-          <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-              <span>Playing As</span>
-              <span className="text-[10px] text-indigo-600 font-bold">Switch</span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <img
-                src={currentTraveler.avatar}
-                alt={currentTraveler.name}
-                className="w-10 h-10 rounded-xl object-cover border border-slate-300 shrink-0"
+                src={currentTraveler?.avatar}
+                alt={currentTraveler?.name}
+                className="w-8 h-8 rounded-lg object-cover border border-gray-300 shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <select
-                  value={currentTraveler.id}
+                  value={currentTraveler?.id}
                   onChange={(e) => {
                     const found = travelers.find(t => t.id === e.target.value);
                     if (found) setCurrentTraveler(found);
                   }}
-                  className="w-full bg-transparent font-black text-xs text-slate-900 focus:outline-none cursor-pointer truncate"
+                  className="w-full bg-transparent font-bold text-xs text-gray-900 focus:outline-none cursor-pointer truncate"
                 >
                   {travelers.map(t => (
-                    <option key={t.id} value={t.id} className="text-slate-900">
+                    <option key={t.id} value={t.id} className="text-gray-900">
                       {t.name}
                     </option>
                   ))}
                 </select>
-                <div className="text-[11px] text-slate-500 truncate mt-0.5">
-                  {currentTraveler.vibe}
+                <div className="text-[10px] text-gray-500 truncate font-normal">
+                  {currentTraveler?.vibe}
                 </div>
               </div>
             </div>
 
-            <div className="pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-medium">
-              <span>Sub-AI: {currentTraveler.agentName.split(' ')[0]}</span>
-              <span className="font-bold text-amber-700">${currentTraveler.budgetDaily}/d cap</span>
+            <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-600 font-medium">
+              <span>Sub-AI: {currentTraveler?.agentName}</span>
+              <span className="font-semibold text-gray-900">${currentTraveler?.budgetDaily}/d</span>
             </div>
+          </div>
+
+          {/* Supabase Account Status */}
+          <div className="p-2.5 rounded-xl border border-gray-200 bg-white flex items-center justify-between">
+            {authUser ? (
+              <div className="flex items-center justify-between w-full">
+                <div className="min-w-0 pr-2">
+                  <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    Logged In
+                  </div>
+                  <div className="text-xs font-semibold text-gray-900 truncate">
+                    {authUser.email}
+                  </div>
+                </div>
+                <button
+                  onClick={onSignOut}
+                  title="Sign Out"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-gray-100 transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuthModal}
+                className="w-full py-1.5 px-2.5 rounded-lg bg-gray-900 hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Sign In / Join Trip</span>
+              </button>
+            )}
+          </div>
+
+          {/* Gemini LLM Status */}
+          <div className="flex items-center justify-between text-[11px] text-gray-500 px-1">
+            <span className="flex items-center gap-1.5 font-medium">
+              {keyActive ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-emerald-700 font-semibold truncate max-w-[120px]" title={`Gemini Model: ${getActiveModelName()}`}>
+                    Gemini Live
+                  </span>
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Offline Demo</span>
+                </>
+              )}
+            </span>
+            <button
+              onClick={onOpenApiKeyModal}
+              className="text-[10px] font-semibold text-gray-600 hover:text-gray-900 underline cursor-pointer"
+            >
+              {keyActive ? 'Config Key' : 'Set Gemini Key'}
+            </button>
           </div>
         </div>
       </aside>

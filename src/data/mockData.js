@@ -1,5 +1,30 @@
 export const INITIAL_TRAVELERS = [
   {
+    id: 'you',
+    name: 'Justin (You)',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&h=200&q=80',
+    role: 'Lead Traveler & Real User',
+    agentName: 'Justin-Bot (Your AI Advocate)',
+    agentAvatar: '🤖',
+    agentTone: 'Faithful, protective of your preferences',
+    budgetDaily: 160,
+    preferredWakeUp: '09:00 AM',
+    walkingLimitSteps: 10000,
+    dietary: 'Authentic ramen & local street food',
+    vibe: 'Balanced Food & Culture Explorer',
+    privateNotes: 'I injured my knee last year, so please keep daily walking under 10,000 steps. I want authentic ramen street stalls and relaxed morning brunch.',
+    identifiedPreferences: [
+      '#Budget$160',
+      '#GentleWalking',
+      '#AuthenticRamen',
+      '#NoRushedMornings'
+    ],
+    chips: 160,
+    seatNumber: 1,
+    tableStatus: 'ready',
+    speechBubble: null,
+  },
+  {
     id: 'alice',
     name: 'Alice Lin',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200&q=80',
@@ -13,9 +38,16 @@ export const INITIAL_TRAVELERS = [
     dietary: 'Pescatarian / Ramen Lover',
     vibe: 'Budget Foodie',
     privateNotes: "I love authentic hidden gems. I secretly hate paying $200+ for meals where portions are tiny. Also need coffee immediately upon waking.",
+    identifiedPreferences: [
+      '#AuthenticLocalFood',
+      '#Budget$150',
+      '#HiddenGemsOnly',
+      '#NoTinyPortions',
+      '#MorningCoffeeMust'
+    ],
     chips: 150,
-    seatNumber: 1,
-    tableStatus: 'thinking', // 'ready', 'thinking', 'vetoed', 'compromised'
+    seatNumber: 2,
+    tableStatus: 'thinking',
     speechBubble: null,
   },
   {
@@ -32,8 +64,15 @@ export const INITIAL_TRAVELERS = [
     dietary: 'No restrictions / Loves Craft Beer',
     vibe: 'Night Owl Adventurer',
     privateNotes: "Do NOT make me wake up before 10 AM on vacation! I want neon lights, Shibuya nightlife, VR gaming arcades, and rooftop bars.",
+    identifiedPreferences: [
+      '#NightOwl',
+      '#NoWakeUpBefore10AM',
+      '#CraftBeer',
+      '#VRGaming',
+      '#RooftopBars'
+    ],
     chips: 350,
-    seatNumber: 2,
+    seatNumber: 3,
     tableStatus: 'ready',
     speechBubble: null,
   },
@@ -51,8 +90,15 @@ export const INITIAL_TRAVELERS = [
     dietary: 'Specialty Cafes & Matcha',
     vibe: 'Mindful Culturalist',
     privateNotes: "I get overwhelmed if we rush through 5 places a day. I need at least 1.5 hours in TeamLab or quiet gardens, and frequent cafe pauses to recharge.",
+    identifiedPreferences: [
+      '#PacingUnder10kSteps',
+      '#SpecialtyMatcha',
+      '#AestheticPhotography',
+      '#GardenQuietness',
+      '#IndoorPlanB'
+    ],
     chips: 220,
-    seatNumber: 3,
+    seatNumber: 4,
     tableStatus: 'ready',
     speechBubble: null,
   }
@@ -607,7 +653,7 @@ export const WORLD_NEWS_ALERTS = [
   }
 ];
 
-export const INITIAL_POKER_AGENDA = {
+export const INITIAL_MEETING_AGENDA = {
   roundTitle: "Round 2: Day 3 Disruption Dilemma & Budget Reallocation",
   potTotal: "$540 Saved Pool",
   currentTopic: "Day 3 Tokyo Bay Himiko Cruise cancelled due to gale winds. How should the team reallocate the 16:00 - 18:30 slot?",
@@ -677,10 +723,15 @@ export const INITIAL_POKER_AGENDA = {
 };
 
 export const INITIAL_CHAT_MESSAGES = {
+  you: [
+    { id: 1, sender: 'bot', text: "Hey Justin! I'm Justin-Bot, your personal travel advocate. What's on your mind regarding the Tokyo trip that you want me to defend during the squad deliberation?" },
+    { id: 2, sender: 'user', text: "I injured my knee last year, so please make sure we keep daily walking under 10,000 steps. Also, I really want authentic ramen and don't want to wake up before 9:00 AM." },
+    { id: 3, sender: 'bot', text: "Understood loud and clear! I've noted your 10,000 step fatigue limit, 9:00 AM wake-up lock, and authentic ramen priority. When we meet at the Squad Table, I'll push for sheltered, low-walking options that hit great local spots within your $160 daily budget!" }
+  ],
   alice: [
     { id: 1, sender: 'bot', text: 'Hey Alice! I’m your personal Sub-AI concierge. What’s on your mind regarding the Tokyo trip that you wouldn’t necessarily want to say out loud to the group chat?' },
     { id: 2, sender: 'user', text: 'Honestly? Bob always pushes for crazy expensive restaurants and I really can’t spend more than $150 a day total. Plus, I want authentic ramen street stalls, not fancy hotel lobbies.' },
-    { id: 3, sender: 'bot', text: 'Got your back 100%. I will privately set your budget ceiling to $150/day and prioritize top-rated Michelin Bib Gourmand ramen & izakayas during the master synthesis. When Bob suggests high-roller spots, I will step in during the poker meeting and propose high-value alternatives so you don’t have to play the bad cop!' },
+    { id: 3, sender: 'bot', text: 'Got your back 100%. I will privately set your budget ceiling to $150/day and prioritize top-rated Michelin Bib Gourmand ramen & izakayas during the master synthesis. When Bob suggests high-roller spots, I will step in during the squad deliberation meeting and propose high-value alternatives so you don’t have to play the bad cop!' },
     { id: 4, sender: 'user', text: 'Thank you! Also my knees hurt after 12,000 steps, so please don’t let them pack 6 sightseeing spots in one afternoon.' },
     { id: 5, sender: 'bot', text: 'Recorded: "Fatigue threshold: 12,000 steps max". I will ensure our daily itineraries feature localized cluster activities with direct transit links.' }
   ],

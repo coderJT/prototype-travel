@@ -3,37 +3,110 @@
 const STORAGE_KEY = 'escapeplan_gemini_api_key';
 const STORAGE_MODEL = 'escapeplan_gemini_model';
 
-const DEFAULT_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-const DEFAULT_MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-1.5-flash';
+const DEFAULT_KEY = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) || (typeof process !== 'undefined' && process.env?.VITE_GEMINI_API_KEY) || '';
+const DEFAULT_MODEL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_MODEL) || (typeof process !== 'undefined' && process.env?.VITE_GEMINI_MODEL) || 'gemini-1.5-flash';
+
+let cachedWorkingModel = null;
 
 export const getStoredApiKey = () => {
-  return localStorage.getItem(STORAGE_KEY) || DEFAULT_KEY;
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem(STORAGE_KEY) || DEFAULT_KEY;
+  }
+  return DEFAULT_KEY;
 };
 
 export const setStoredApiKey = (key) => {
-  if (key) {
-    localStorage.setItem(STORAGE_KEY, key.trim());
-  } else {
-    localStorage.removeItem(STORAGE_KEY);
+  if (typeof localStorage !== 'undefined') {
+    if (key) {
+      localStorage.setItem(STORAGE_KEY, key.trim());
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    cachedWorkingModel = null;
   }
 };
 
 export const getStoredModel = () => {
-  const model = localStorage.getItem(STORAGE_MODEL) || DEFAULT_MODEL;
-  // Clean prefix if user input "gemini/gemini-flash-latest" -> "gemini-1.5-flash"
-  if (model.includes('flash')) return 'gemini-1.5-flash';
-  return model.replace(/^gemini\//, '');
+  let model = DEFAULT_MODEL;
+  if (typeof localStorage !== 'undefined') {
+    model = localStorage.getItem(STORAGE_MODEL) || DEFAULT_MODEL;
+  }
+  if (!model) return 'gemini-1.5-flash';
+  return model.replace(/^models\//, '').replace(/^gemini\//, '');
 };
 
 export const setStoredModel = (model) => {
-  if (model) {
+  if (typeof localStorage !== 'undefined' && model) {
     localStorage.setItem(STORAGE_MODEL, model.trim());
+    cachedWorkingModel = null;
   }
+};
+
+export const getActiveModelName = () => {
+  return cachedWorkingModel || getStoredModel() || 'gemini-1.5-flash';
 };
 
 export const hasApiKey = () => {
   const key = getStoredApiKey();
   return Boolean(key && key.length > 5);
+};
+
+// Dynamic model resolver that queries available models or selects working fallback
+export const resolveGeminiModel = async (apiKey) => {
+  if (cachedWorkingModel) return cachedWorkingModel;
+  const stored = getStoredModel();
+  if (!apiKey) return stored || 'gemini-1.5-flash';
+
+  try {
+    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const res = await fetch(listUrl);
+    if (res.ok) {
+      const data = await res.json();
+      const models = (data.models || [])
+        .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+        .map(m => m.name.replace(/^models\//, ''));
+
+      if (models.length > 0) {
+        if (stored && models.includes(stored)) {
+          cachedWorkingModel = stored;
+          return stored;
+        }
+        const priority = [
+          'gemini-2.5-flash',
+          'gemini-2.0-flash',
+          'gemini-1.5-flash-latest',
+          'gemini-1.5-flash',
+          'antigravity-preview-05-2026',
+          'gemini-2.5-pro',
+          'gemini-1.5-pro'
+        ];
+        for (const p of priority) {
+          if (models.includes(p)) {
+            cachedWorkingModel = p;
+            return p;
+          }
+        }
+        const general = models.find(m =>
+          !m.includes('audio') &&
+          !m.includes('tts') &&
+          !m.includes('robotics') &&
+          !m.includes('computer-use') &&
+          !m.includes('embedding')
+        );
+        if (general) {
+          cachedWorkingModel = general;
+          return general;
+        }
+        cachedWorkingModel = models[0];
+        return cachedWorkingModel;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not query model list, using fallback priority list:', err);
+  }
+
+  cachedWorkingModel = stored || 'gemini-1.5-flash';
+  return cachedWorkingModel;
 };
 
 // ==========================================
@@ -48,16 +121,25 @@ export const generatePlanWithAI = async ({
   travelers = []
 }) => {
   const apiKey = getStoredApiKey();
-  const model = getStoredModel();
 
   if (apiKey) {
-    try {
-      const prompt = `You are the Master Travel AI Orchestrator. Create a detailed, realistic ${durationDays}-day travel itinerary for ${destination}.
+    const candidateModelsToTry = [];
+    const initialModel = await resolveGeminiModel(apiKey);
+    if (initialModel) candidateModelsToTry.push(initialModel);
+
+    const fallbackList = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest', 'antigravity-preview-05-2026', 'gemini-1.5-flash', 'gemini-2.5-pro'];
+    for (const alt of fallbackList) {
+      if (!candidateModelsToTry.includes(alt)) {
+        candidateModelsToTry.push(alt);
+      }
+    }
+
+    const prompt = `You are the Master Travel AI Orchestrator. Create an authentic, highly detailed, realistic ${durationDays}-day travel itinerary for ${destination}.
 Theme: ${theme}. Pace: ${pace}.
 Group Constraints:
-${travelers.map(t => `- ${t.name}: Daily budget cap $${t.budgetDaily}, wake-up not before ${t.preferredWakeUp}, max ${t.walkingLimitSteps} steps, likes ${t.dietary}. Agent: ${t.agentName}`).join('\n')}
+${travelers.map(t => `- ${t.name}: Daily budget cap $${t.budgetDaily}, wake-up not before ${t.preferredWakeUp}, max ${t.walkingLimitSteps} steps, dietary/interests: ${t.dietary}. Advocate Sub-AI: ${t.agentName}`).join('\n')}
 
-Format strictly as JSON matching this schema:
+Format strictly as a JSON array of ${durationDays} days matching this exact structure:
 [
   {
     "day": 1,
@@ -69,70 +151,63 @@ Format strictly as JSON matching this schema:
       {
         "id": "item-1-1",
         "time": "10:00 - 12:00",
-        "title": "Specific activity name",
+        "title": "Specific activity name in ${destination}",
         "type": "activity",
         "category": "Culture",
         "costPerPerson": 25,
-        "advocate": "Alice-Bot",
+        "advocate": "${travelers[0]?.agentName || 'Sub-AI'}",
         "description": "Engaging, practical description",
         "status": "confirmed",
-        "location": "District or neighborhood",
-        "socialProof": {
-          "xhs": {
-            "author": "Real verified creator or tourism bureau (e.g. 日本国家旅游局JNTO, GO TOKYO东京观光, 日本美食探索, teamLab无界)",
-            "verified": true,
-            "profileUrl": "https://www.xiaohongshu.com/user/profile/60011650000000000100204b",
-            "likes": "2.8w",
-            "tag": "官方避坑",
-            "tip": "Concrete crowd avoidance or hidden gem advice from Xiaohongshu / RedNote"
-          },
-          "instagram": {
-            "handle": "Real verified creator (e.g. @gotokyo.official, @tokyocameraclub, @tokyocheapo, @teamlab, @ramenadventures, @tokyofoodguide)",
-            "verified": true,
-            "profileUrl": "https://www.instagram.com/gotokyo.official/",
-            "likes": "48.2k",
-            "reelDuration": "0:25",
-            "tip": "Photography framing or viral aesthetic angle"
-          }
-        }
+        "location": "District or neighborhood"
       }
     ]
   }
 ]
-Return ONLY raw JSON, no markdown code blocks.`;
+Return ONLY raw JSON, with no explanation and no markdown fences.`;
 
-      // Support both header and query param for maximum compatibility
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
+    for (const modelToUse of candidateModelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
+        const headers = {
           'Content-Type': 'application/json',
           'x-goog-api-key': apiKey,
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.7,
-            responseMimeType: 'application/json'
-          }
-        })
-      });
+          ...(apiKey.startsWith('ya29.') ? { 'Authorization': `Bearer ${apiKey}` } : {})
+        };
 
-      if (response.ok) {
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.7,
+              responseMimeType: 'application/json'
+            }
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            text = text.trim();
+            if (text.startsWith('```json')) {
+              text = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+            } else if (text.startsWith('```')) {
+              text = text.replace(/^```\s*/, '').replace(/\s*```$/, '');
+            }
+            const parsed = JSON.parse(text);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              cachedWorkingModel = modelToUse;
+              return parsed;
+            }
           }
+        } else {
+          console.warn(`Gemini model ${modelToUse} returned status ${response.status}`);
         }
-      } else {
-        console.warn('Gemini response status:', response.status, await response.text());
+      } catch (err) {
+        console.warn(`Gemini generation with ${modelToUse} error:`, err);
       }
-    } catch (err) {
-      console.warn('Live Gemini API call failed, falling back to smart destination generator:', err);
     }
   }
 
@@ -626,3 +701,85 @@ function getCuratedVideoForPrompt(prompt, style) {
     style
   };
 }
+
+// ==========================================
+// 5. INTELLIGENT 1-ON-1 SUB-AI CHAT (LANGGRAPH)
+// ==========================================
+
+export const chatWithSubAI = async ({
+  traveler,
+  userMessage,
+  chatHistory = [],
+  destination = 'Tokyo',
+  itinerary = [],
+  travelers = [],
+  activeTrip = null,
+  dilemma = null,
+  returnFull = false
+}) => {
+  const { runSubAIChatGraph } = await import('./langgraphEngine.js');
+  const result = await runSubAIChatGraph({
+    traveler,
+    userMessage,
+    chatHistory,
+    destination,
+    itinerary,
+    travelers,
+    activeTrip,
+    dilemma
+  });
+  if (returnFull) {
+    return result;
+  }
+  return result.reply;
+};
+
+// ==========================================
+// 6. DELIBERATION TABLE GEMINI ENGINE (LANGGRAPH)
+// ==========================================
+
+export const generateMeetingDebateWithAI = async ({
+  travelers = [],
+  destination = 'Tokyo',
+  option,
+  dilemmaTitle = 'Storm Disruption Dilemma',
+  itinerary = [],
+  chatMessages = {}
+}) => {
+  const { runSquadDeliberationGraph } = await import('./langgraphEngine.js');
+  return runSquadDeliberationGraph({
+    travelers,
+    destination,
+    option,
+    dilemmaTitle,
+    itinerary,
+    chatMessages
+  });
+};
+
+export const respondToMeetingArgumentWithAI = async ({
+  userArgument,
+  traveler,
+  currentOption,
+  destination = 'Tokyo',
+  travelers = [],
+  itinerary = [],
+  returnFull = false
+}) => {
+  const { runMeetingArgumentGraph } = await import('./langgraphEngine.js');
+  return runMeetingArgumentGraph({
+    userArgument,
+    traveler,
+    currentOption,
+    destination,
+    travelers,
+    itinerary,
+    returnFull
+  });
+};
+
+export const generatePeerAgentTurnResponse = async (params) => {
+  const { generatePeerAgentTurnResponse: fn } = await import('./langgraphEngine.js');
+  return fn(params);
+};
+

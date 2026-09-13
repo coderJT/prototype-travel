@@ -2,7 +2,7 @@
 
 **Team:** Justin Tan Jing Yi, Lee Sing Yee, Kow Yun Shen  
 **Problem Statement:** Travel Planner  
-**Video Presentation:** https://youtu.be/ffuf-reKqo0 
+**Video Presentation:** https://youtu.be/ffuf-reKqo0      
 **Presentation Slides:** https://canva.link/9mh3yzy78ggrcku  
 **Live Interactive Prototype:** [https://coderJT.github.io/prototype-travel](https://coderJT.github.io/prototype-travel)  
 

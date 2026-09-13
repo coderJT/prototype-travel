@@ -401,7 +401,7 @@ export default function App() {
         {/* Main Content Area */}
         <main className="flex-1 pb-16 overflow-y-auto">
           {/* Agent Chat */}
-          {activeTab === 'personal' && (
+          <div className={activeTab === 'personal' ? 'block' : 'hidden'}>
             <PersonalizationStudio
               currentTraveler={currentTraveler}
               chatMessages={chatMessages}
@@ -416,10 +416,10 @@ export default function App() {
               onGeneratePlanNow={handleGeneratePlanNow}
               isThinking={isChatThinking}
             />
-          )}
+          </div>
 
           {/* Meeting Table */}
-          {activeTab === 'meeting' && (
+          <div className={activeTab === 'meeting' ? 'block' : 'hidden'}>
             <MeetingTable
               currentTraveler={currentTraveler}
               travelers={travelers}
@@ -432,20 +432,20 @@ export default function App() {
               chatMessages={chatMessages}
               destination={currentDestination}
             />
-          )}
+          </div>
 
           {/* Traveler Profile */}
-          {activeTab === 'profile' && (
+          <div className={activeTab === 'profile' ? 'block' : 'hidden'}>
             <TravelerProfileView
               currentTraveler={currentTraveler}
               onUpdateTraveler={handleUpdateTraveler}
               onNavigateToChat={() => setActiveTab('personal')}
               onNavigateToMeeting={() => setActiveTab('meeting')}
             />
-          )}
+          </div>
 
           {/* Master Itinerary */}
-          {activeTab === 'itinerary' && (
+          <div className={activeTab === 'itinerary' ? 'block' : 'hidden'}>
             <ItineraryView
               itinerary={itinerary}
               travelers={travelers}
@@ -473,21 +473,23 @@ export default function App() {
               lastMeetingUpdate={lastMeetingUpdate}
               chatMessages={chatMessages}
             />
-          )}
+          </div>
 
-          {activeTab === 'bookings' && (
+          {/* Bookings Hub */}
+          <div className={activeTab === 'bookings' ? 'block' : 'hidden'}>
             <BookingHub
               currentDestination={currentDestination}
               travelers={travelers}
             />
-          )}
+          </div>
 
-          {activeTab === 'budget' && (
+          {/* Budget Splitter */}
+          <div className={activeTab === 'budget' ? 'block' : 'hidden'}>
             <BudgetSplitter
               travelers={travelers}
               itinerary={itinerary}
             />
-          )}
+          </div>
         </main>
       </div>
 

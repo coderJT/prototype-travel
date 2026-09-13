@@ -1,4 +1,4 @@
-// Gemini API Service with Live Credentials & Model Support
+// Gemini API Service with Live Credentials & Gemini 3.5 Model Support
 
 const STORAGE_KEY = 'escapeplan_gemini_api_key';
 const STORAGE_MODEL = 'escapeplan_gemini_model';
@@ -31,7 +31,7 @@ export const getStoredModel = () => {
   if (typeof localStorage !== 'undefined') {
     model = localStorage.getItem(STORAGE_MODEL) || DEFAULT_MODEL;
   }
-  if (!model) return 'gemini-1.5-flash';
+  if (!model) return 'gemini-3.5-flash';
   return model.replace(/^models\//, '').replace(/^gemini\//, '');
 };
 
@@ -43,7 +43,7 @@ export const setStoredModel = (model) => {
 };
 
 export const getActiveModelName = () => {
-  return cachedWorkingModel || getStoredModel() || 'gemini-1.5-flash';
+  return cachedWorkingModel || getStoredModel() || 'gemini-3.5-flash';
 };
 
 export const hasApiKey = () => {
@@ -51,11 +51,11 @@ export const hasApiKey = () => {
   return Boolean(key && key.length > 5);
 };
 
-// Dynamic model resolver that queries available models or selects working fallback
+// Dynamic model resolver that queries available models or selects Gemini 3.5 working fallback
 export const resolveGeminiModel = async (apiKey) => {
   if (cachedWorkingModel) return cachedWorkingModel;
   const stored = getStoredModel();
-  if (!apiKey) return stored || 'gemini-1.5-flash';
+  if (!apiKey) return stored || 'gemini-3.5-flash';
 
   try {
     const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
@@ -72,13 +72,13 @@ export const resolveGeminiModel = async (apiKey) => {
           return stored;
         }
         const priority = [
+          'gemini-3.5-flash',
+          'gemini-3.5-pro',
+          'gemini-3.5',
           'gemini-2.5-flash',
           'gemini-2.0-flash',
           'gemini-1.5-flash-latest',
-          'gemini-1.5-flash',
-          'antigravity-preview-05-2026',
-          'gemini-2.5-pro',
-          'gemini-1.5-pro'
+          'gemini-1.5-flash'
         ];
         for (const p of priority) {
           if (models.includes(p)) {
@@ -105,7 +105,7 @@ export const resolveGeminiModel = async (apiKey) => {
     console.warn('Could not query model list, using fallback priority list:', err);
   }
 
-  cachedWorkingModel = stored || 'gemini-1.5-flash';
+  cachedWorkingModel = stored || 'gemini-3.5-flash';
   return cachedWorkingModel;
 };
 
@@ -127,7 +127,7 @@ export const generatePlanWithAI = async ({
     const initialModel = await resolveGeminiModel(apiKey);
     if (initialModel) candidateModelsToTry.push(initialModel);
 
-    const fallbackList = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest', 'antigravity-preview-05-2026', 'gemini-1.5-flash', 'gemini-2.5-pro'];
+    const fallbackList = ['gemini-3.5-flash', 'gemini-3.5-pro', 'gemini-3.5', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
     for (const alt of fallbackList) {
       if (!candidateModelsToTry.includes(alt)) {
         candidateModelsToTry.push(alt);
